@@ -9,13 +9,19 @@ static int MEMUSED = 0;
 
 //creating linked list
 
-//typedef struct node {
-//    int data:
-//    struct node *next;
-//}node;
+typedef struct Node {
+    void  *data;      //generic linked list
+    int free;         //used to known if that linked list is free or not.
+    struct Node *next;
+};
 
-//struct node *linkedList; //start of the linked list
+void insertList (void **data){
+    struct NODE *list = (struct Node*) malloc(sizeof(struct Node)); //Creates of type node and calls mymalloc for the space.
 
+    list->data = ;
+    list->free = 0;
+
+}
 
 void *mymalloc(size_t size, char *file, int line){
     printf("Mymalloc called from %s:%d\n", file, line);
