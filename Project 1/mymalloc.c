@@ -31,6 +31,8 @@ void *mymalloc(size_t size, char *file, int line){
          return NULL;
     }
     
+    
+
     void *memBlock = memory + MEMUSED + METADATA; //A pointer to the start of free memory.
     MEMUSED += trueSize;
 
@@ -41,4 +43,21 @@ void myfree(void *p, char *file, int line){
     printf("Myfree called from %s:%d\n", file, line);
     
 }
+
+void toBytes(int size, char* ptr){
+    ptr[0] = (size >> 24) & 0xFF;
+    ptr[1] = (size >> 16) & 0xFF;
+    ptr[2] = (size >> 8) & 0xFF;
+    ptr[3] = size & 0xFF;
+}
+
+int toInt(char* size){
+    return 0;
+}
+
+struct metadata{
+    size_t size;
+    bool free;
+};
+
 
