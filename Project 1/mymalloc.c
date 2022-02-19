@@ -4,7 +4,7 @@
 #include "mymalloc.h"
 
 #define MEMSIZE 4096
-#define METADATA 16
+#define METADATA 9
 
 static char memory[MEMSIZE];
 static int MEMUSED = 0;
@@ -12,7 +12,7 @@ static int MEMUSED = 0;
 typedef struct metadata{
    //struct Metadata *next;
     size_t size;
-    int free;
+    bool free;
 } metadata;
 
 //creating linked list
