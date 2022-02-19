@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "mymalloc.h"
 
 #define MEMSIZE 4096
@@ -7,6 +8,12 @@
 
 static char memory[MEMSIZE];
 static int MEMUSED = 0;
+
+struct metadata{
+   //struct Metadata *next;
+    size_t size;
+    bool free;
+};
 
 //creating linked list
 
@@ -21,8 +28,21 @@ static int MEMUSED = 0;
 void *mymalloc(size_t size, char *file, int line){
     printf("Mymalloc called from %s:%d\n", file, line);
     
-    size_t trueSize;
-    trueSize=size+METADATA;
+    size_t trueSize = 0;
+   // trueSize=size+METADATA;
+
+   struct metadata data;
+   data.free = 1;
+   data.size = size;
+
+  if(memory[0] == 0){ //the memory array is empty
+        memory[0] = (char *) (sizeof(data));
+
+  }
+
+  while (memory != 0){
+      trueSize ++;
+  }
 
     printf("The value of trueSize : %zu:\n", trueSize);
     
@@ -55,9 +75,6 @@ int toInt(char* size){
     return 0;
 }
 
-struct metadata{
-    size_t size;
-    bool free;
-};
+
 
 
