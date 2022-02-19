@@ -9,11 +9,11 @@
 static char memory[MEMSIZE];
 static int MEMUSED = 0;
 
-struct metadata{
+typedef struct metadata{
    //struct Metadata *next;
     size_t size;
     int free;
-};
+} metadata;
 
 //creating linked list
 
@@ -30,18 +30,31 @@ void *mymalloc(size_t size, char *file, int line){
     
     size_t trueSize = 0;
    // trueSize=size+METADATA;
+   for(int i = 0; i<30; i++){
+       memory[i]=5;
+        printf(" %hhx\n", memory[i]);
+    }
+    printf("Adding elements \n");
+    void *memBlock =  memory;
+   metadata *data= (metadata*) memBlock;
+   data->free = 1;
+   data->size = 500;
+   
 
-   struct metadata data;
-   data.free = 1;
-   data.size = size;
+  // memBlock= &data;
 
-   printf("Size of struct: %ld\n", sizeof(data));
+  // struct metadata yeet= *memBlock;
+   //printf("Size of yeet: %ld\n", yeet.size);
+  // struct metadata first= (*struct metadata) *memBlock;
+  // printf("Metadata Size is : %ld free: %d\n", first.size, first.free);
+for(int i = 0; i<30; i++){
+        printf(" %hhx\n", memory[i]);
+    }
+   printf("Size of struct: %ld\n", sizeof(*data));
 
          //the memory array is empty
-        memory[0] = (char *) (sizeof(data));
-    for(int i = 0; i<30; i++){
-        printf(" %c\n", memory[i]);
-    }
+        //memory[0] = (char *) (sizeof(data));
+    
   
 
 
@@ -49,17 +62,17 @@ void *mymalloc(size_t size, char *file, int line){
   //    trueSize ++;
  // }
 
-    printf("The value of trueSize : %zu:\n", trueSize);
+    // printf("The value of trueSize : %zu:\n", trueSize);
     
-    if (MEMSIZE - MEMUSED < trueSize) {
-         printf("Too large for current free memory. \n");
-         return NULL;
-    }
+    // if (MEMSIZE - MEMUSED < trueSize) {
+    //      printf("Too large for current free memory. \n");
+    //      return NULL;
+    // }
     
     
 
-    void *memBlock = memory + MEMUSED + METADATA; //A pointer to the start of free memory.
-    MEMUSED += trueSize;
+    // void *memBlock = memory + MEMUSED + METADATA; //A pointer to the start of free memory.
+    // MEMUSED += trueSize;
 
     return memBlock;
 } 
