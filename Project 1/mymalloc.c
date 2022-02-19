@@ -4,7 +4,7 @@
 #include "mymalloc.h"
 
 #define MEMSIZE 4096
-#define METADATA 5
+#define METADATA 16
 
 static char memory[MEMSIZE];
 static int MEMUSED = 0;
@@ -12,7 +12,7 @@ static int MEMUSED = 0;
 struct metadata{
    //struct Metadata *next;
     size_t size;
-    bool free;
+    int free;
 };
 
 //creating linked list
@@ -35,14 +35,19 @@ void *mymalloc(size_t size, char *file, int line){
    data.free = 1;
    data.size = size;
 
-  if(memory[0] == 0){ //the memory array is empty
+   printf("Size of struct: %ld\n", sizeof(data));
+
+         //the memory array is empty
         memory[0] = (char *) (sizeof(data));
+    for(int i = 0; i<30; i++){
+        printf(" %c\n", memory[i]);
+    }
+  
 
-  }
 
-  while (memory != 0){
-      trueSize ++;
-  }
+ // while (memory != 0){
+  //    trueSize ++;
+ // }
 
     printf("The value of trueSize : %zu:\n", trueSize);
     
