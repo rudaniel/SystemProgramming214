@@ -12,7 +12,7 @@ typedef struct metadata{
 int main(int argc, char**argv){
 
   metadata* p= malloc(10);
-printf("We are in main function. The size is %ld and the free is %d.", p->size,p->free);
+printf("We are in main function. The size is %ld and the free is %d.\n", p->size,p->free);
 
 
 

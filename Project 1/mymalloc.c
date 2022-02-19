@@ -40,7 +40,8 @@ void *mymalloc(size_t size, char *file, int line){
    data->free = 1;
    data->size = 500;
    
-
+metadata* p=memBlock;
+printf("We are in malloc function. The size is %ld and the free is %d.\n", p->size,p->free);
   // memBlock= &data;
 
   // struct metadata yeet= *memBlock;
