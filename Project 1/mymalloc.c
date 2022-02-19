@@ -31,14 +31,19 @@ void *mymalloc(size_t size, char *file, int line){
     size_t trueSize = 0;
    // trueSize=size+METADATA;
    for(int i = 0; i<30; i++){
-       memory[i]=5;
+       //memory[i]=5;
         printf(" %hhx\n", memory[i]);
     }
     printf("Adding elements \n");
     void *memBlock =  memory;
    metadata *data= (metadata*) memBlock;
    data->free = 1;
-   data->size = 500;
+   data->size = 10;
+
+   void *memBlock2 =  memory+METADATA+data->size;
+   metadata *data2= (metadata*) memBlock2;
+   data2->free = 1;
+   data2->size = 500;
    
 metadata* p=memBlock;
 printf("We are in malloc function. The size is %ld and the free is %d.\n", p->size,p->free);
