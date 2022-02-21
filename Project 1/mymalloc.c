@@ -37,14 +37,23 @@ void *mymalloc(size_t size, char *file, int line){
     printf("Adding elements \n");
     void *memBlock =  memory;
    metadata *data;
+   int remainder=MEMSIZE;
     for(int i=0; i<400;i++){
+        printf("remainder %d size %ld metadata %d \n", remainder, size, METADATA);
         data=(metadata*) memBlock;
+        int temp=remainder-METADATA-size;
+        printf("temp %d\n",temp);
+        if(temp<0){
+            printf("out of storage\n");
+            return NULL;
+        }
     if(data->free==0&& data->size==0){
         data->free = 1;
         data->size = size;
         break;
     }
         memBlock=memBlock+METADATA+data->size;
+        remainder=remainder-METADATA-data->size;
     }
     printf("adress of memory %p\n", memory);
         printf("adress of memory[0] %p\n", &memory[0]);
@@ -65,10 +74,10 @@ printf("We are in malloc function. The size is %ld and the free is %d.\n", p->si
    //printf("Size of yeet: %ld\n", yeet.size);
   // struct metadata first= (*struct metadata) *memBlock;
   // printf("Metadata Size is : %ld free: %d\n", first.size, first.free);
-for(int i = 0; i<100; i++){
-        printf(" %hhx\n", memory[i]);
-    }
-   printf("Size of struct: %ld\n", sizeof(*data));
+// for(int i = 0; i<100; i++){
+//         printf(" %hhx\n", memory[i]);
+//     }
+//    printf("Size of struct: %ld\n", sizeof(*data));
 
          //the memory array is empty
         //memory[0] = (char *) (sizeof(data));
@@ -99,18 +108,3 @@ void myfree(void *p, char *file, int line){
     printf("Myfree called from %s:%d\n", file, line);
     
 }
-
-void toBytes(int size, char* ptr){
-    ptr[0] = (size >> 24) & 0xFF;
-    ptr[1] = (size >> 16) & 0xFF;
-    ptr[2] = (size >> 8) & 0xFF;
-    ptr[3] = size & 0xFF;
-}
-
-int toInt(char* size){
-    return 0;
-}
-
-
-
-
