@@ -3,16 +3,20 @@
 #include <stdbool.h>
 #include "mymalloc.h"
 
-typedef struct metadata{
-   //struct Metadata *next;
-    size_t size;
-    bool free;
-} metadata;
+
 
 int main(int argc, char**argv){
 
-  metadata* p= malloc(10);
-printf("We are in main function. The size is %ld and the free is %d.\n", p->size,p->free);
+  int* p= malloc(10);
+
+
+
+int* pp= malloc(25);
+
+
+
+int* ppp= malloc(5);
+
 
 
 

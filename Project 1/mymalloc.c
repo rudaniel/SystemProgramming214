@@ -30,20 +30,32 @@ void *mymalloc(size_t size, char *file, int line){
     
     size_t trueSize = 0;
    // trueSize=size+METADATA;
-   for(int i = 0; i<30; i++){
-       //memory[i]=5;
-        printf(" %hhx\n", memory[i]);
-    }
+//    for(int i = 0; i<100; i++){
+//        //memory[i]=5;
+//         printf(" %hhx\n", memory[i]);
+//     }
     printf("Adding elements \n");
     void *memBlock =  memory;
-   metadata *data= (metadata*) memBlock;
-   data->free = 1;
-   data->size = 10;
+   metadata *data;
+    for(int i=0; i<400;i++){
+        data=(metadata*) memBlock;
+    if(data->free==0&& data->size==0){
+        data->free = 1;
+        data->size = size;
+        break;
+    }
+        memBlock=memBlock+METADATA+data->size;
+    }
+    printf("adress of memory %p\n", memory);
+        printf("adress of memory[0] %p\n", &memory[0]);
 
-   void *memBlock2 =  memory+METADATA+data->size;
-   metadata *data2= (metadata*) memBlock2;
-   data2->free = 1;
-   data2->size = 500;
+    printf("adress of memoryadd %p\n", memBlock);
+
+
+//    void *memBlock2 =  memory+METADATA+data->size;
+//    metadata *data2= (metadata*) memBlock2;
+//    data2->free = 1;
+//    data2->size = 500;
    
 metadata* p=memBlock;
 printf("We are in malloc function. The size is %ld and the free is %d.\n", p->size,p->free);
@@ -53,7 +65,7 @@ printf("We are in malloc function. The size is %ld and the free is %d.\n", p->si
    //printf("Size of yeet: %ld\n", yeet.size);
   // struct metadata first= (*struct metadata) *memBlock;
   // printf("Metadata Size is : %ld free: %d\n", first.size, first.free);
-for(int i = 0; i<30; i++){
+for(int i = 0; i<100; i++){
         printf(" %hhx\n", memory[i]);
     }
    printf("Size of struct: %ld\n", sizeof(*data));
