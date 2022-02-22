@@ -5,7 +5,7 @@
 
 #define MEMSIZE 4096
 #define METADATA 9
-
+#define LASTDATA 5 //4 +1 for mem offset
 static char memory[MEMSIZE];
 static int MEMUSED = 0;
 
@@ -27,7 +27,7 @@ typedef struct metadata{
 
 void *mymalloc(size_t size, char *file, int line){
     printf("Mymalloc called from %s:%d\n", file, line);
-    
+    printf("NEEE %hhx\n",memory[0]);
     size_t trueSize = 0;
    // trueSize=size+METADATA;
 //    for(int i = 0; i<100; i++){
@@ -35,23 +35,30 @@ void *mymalloc(size_t size, char *file, int line){
 //         printf(" %hhx\n", memory[i]);
 //     }
     printf("Adding elements \n");
-    void *memBlock =  memory;
+    void *lastBlock =  memory;
+    int *last=(int*) lastBlock;
+    printf("ddllop %d and size of %ld\n", *last,sizeof(int));
+    void *memBlock =  memory+LASTDATA;
    metadata *data;
    int remainder=MEMSIZE;
     for(int i=0; i<400;i++){
         printf("remainder %d size %ld metadata %d \n", remainder, size, METADATA);
         data=(metadata*) memBlock;
-        int temp=remainder-METADATA-size;
+        int temp=MEMSIZE-(remainder-METADATA-size);
         printf("temp %d\n",temp);
-        if(temp<0){
+        if(temp>MEMSIZE){
             printf("out of storage\n");
             return NULL;
         }
-    if(data->free==0&& data->size==0){
-        data->free = 1;
-        data->size = size;
-        break;
-    }
+        if(data->free==0&& data->size==0){
+            data->free = 1;
+            data->size = size;
+            void *bobs=memory;
+            int *cockk=(int*) bobs;
+            *cockk=temp;
+            printf("NEEE %hhx\n",memory[0]);
+            break;
+        }
         memBlock=memBlock+METADATA+data->size;
         remainder=remainder-METADATA-data->size;
     }
@@ -74,10 +81,10 @@ printf("We are in malloc function. The size is %ld and the free is %d.\n", p->si
    //printf("Size of yeet: %ld\n", yeet.size);
   // struct metadata first= (*struct metadata) *memBlock;
   // printf("Metadata Size is : %ld free: %d\n", first.size, first.free);
-// for(int i = 0; i<100; i++){
-//         printf(" %hhx\n", memory[i]);
-//     }
-//    printf("Size of struct: %ld\n", sizeof(*data));
+ for(int i = 0; i<50; i++){
+         printf(" %hhx\n", memory[i]);
+     }
+    printf("Size of struct: %ld\n", sizeof(*data));
 
          //the memory array is empty
         //memory[0] = (char *) (sizeof(data));
@@ -100,7 +107,10 @@ printf("We are in malloc function. The size is %ld and the free is %d.\n", p->si
 
     // void *memBlock = memory + MEMUSED + METADATA; //A pointer to the start of free memory.
     // MEMUSED += trueSize;
-
+ printf("NEEE %hhx\n",memory[0]);
+  void *lasltBlock =  memory;
+    int *llast=(int*) lasltBlock;
+    printf("ddllop %d and size of %ld\n", *llast,sizeof(int));
     return memBlock;
 } 
 
