@@ -7,17 +7,26 @@
 
 int main(int argc, char**argv){
 
-  int* p= malloc(10);
+  char* p= malloc(10);
+
+  for (int i = 0; i<10; i++){
+    p[1] = 'c';
+    p[2] = 'b';
+  }
+ // int *q =malloc(0);
+
+  free(p);
+
+ // int* q= malloc(10);
+
+
+//int* pp= malloc(25);
 
 
 
-int* pp= malloc(25);
+//int* ppp= malloc(5);
 
-
-
-int* ppp= malloc(5);
-
-int* breaker= malloc(4021);
+//int* breaker= malloc(4021);
 
 
 

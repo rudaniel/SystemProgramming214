@@ -48,4 +48,43 @@ void *mymalloc(size_t size, char *file, int line){
 
 void myfree(void *p, char *file, int line){
     printf("Myfree called from %s:%d\n", file, line);
+
+     void *checker =  memory; 
+     int *last = (int*) checker; //gets the remainder, it points to the next free position.
+
+    printf("Remainder value: %d\n", *last);
+
+    if(*last == 0){
+        printf("No Elements in Stack\n");
+        exit(EXIT_FAILURE);
+    }
+
+    void *start =  p-METADATA; 
+
+    void *pointerAddr = p;
+    
+    
+  
+    metadata *data = (metadata*) start; //This is the Metadata of the Node we are currently freeing.
+    size_t nodeSize = data->size;
+    *last = *last-nodeSize-METADATA;
+    printf("Free Data size Before %ld\n", data->size);
+    data->size = 0;
+    data->free = 0;                     //prayingi can free papi ;)
+    printf("Free Data size %ld\n", data->size);
+
+
+    char * something = (char*) pointerAddr;
+
+    for (int i =0; i < nodeSize; i++){
+        something[i] = '\0';
+    }
+
+    printf("Char Test: %c\n", *something);
+
+     for(int i = 0; i<75; i++){
+            printf("        %hhx\n", memory[i]);
+        }
+        printf("    Finished Printing!\n\n");
+
 }
