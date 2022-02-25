@@ -33,11 +33,16 @@ void *mymalloc(size_t size, char *file, int line){
         printf("zero \n");
         data->free = 1;
         data->size = size;
+         if(*last==0){
+             result=memory+METADATA+LASTDATA;
+        }
+        else{
+            result=memory+METADATA+*last+LASTDATA;
+        }
         *last=METADATA+size+*last;
         printf("Ending lastdata %d\n",*last);
-        result=memory+METADATA+LASTDATA;
         printf("\n    Printing Character Array For 75 Spaces... \n");
-        for(int i = 0; i<75; i++){
+        for(int i = 0; i<100; i++){
             printf("        %hhx\n", memory[i]);
         }
         printf("    Finished Printing!\n\n");
@@ -60,7 +65,6 @@ void myfree(void *p, char *file, int line){
     }
 
     void *start =  p-METADATA; 
-
     void *pointerAddr = p;
     
     
@@ -73,6 +77,9 @@ void myfree(void *p, char *file, int line){
     data->free = 0;                     //prayingi can free papi ;)
     printf("Free Data size %ld\n", data->size);
 
+    char* shifter=(char*) start;
+    int tempamount=MEMSIZE-*last-METADATA-nodeSize;
+    int offset=METADATA+nodeSize;
 
     char * something = (char*) pointerAddr;
 
@@ -80,9 +87,16 @@ void myfree(void *p, char *file, int line){
         something[i] = '\0';
     }
 
+    printf("HMMM What do we have here? The start of char array is %d\n", tempamount);
+    for(int i=0; i<tempamount; i++){
+        shifter[i]=shifter[i+offset];
+    }
+
+
+
     printf("Char Test: %c\n", *something);
 
-     for(int i = 0; i<75; i++){
+     for(int i = 0; i<100; i++){
             printf("        %hhx\n", memory[i]);
         }
         printf("    Finished Printing!\n\n");

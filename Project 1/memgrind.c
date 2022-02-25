@@ -10,12 +10,22 @@ int main(int argc, char**argv){
   char* p= malloc(10);
 
   for (int i = 0; i<10; i++){
-    p[1] = 'c';
-    p[2] = 'b';
+    p[i] = 'a';
   }
- // int *q =malloc(0);
+    //free(p);
+  char* pp= malloc(15);
 
-  free(p);
+  for (int i = 0; i<15; i++){
+    pp[i] = 'b';
+  }
+ free(p);
+ // int *q =malloc(0);
+char* pdfp= malloc(20);
+ for (int i = 0; i<20; i++){
+    pdfp[i] = 'c';
+  }
+  char* pdsdffp= malloc(10);
+
 
  // int* q= malloc(10);
 
