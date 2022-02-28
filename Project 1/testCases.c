@@ -6,7 +6,7 @@
 
 
 int main(int argc, char**argv){
-
+srand(time(0));
     //Test Case 1
     clock_t begin = clock();
     
@@ -48,22 +48,25 @@ int main(int argc, char**argv){
 
 
     clock_t begin3 = clock();
-    char *array3[240];
+    char *array3[10];
 
     
-    for (int i = 0; i < 240; i++) {
+    for (int i = 0; i < 10; i++) {
     array3[i] = NULL;
     printf("array3: %p\n", array3[i]);
     }
 
-    for (int j = 0; j<50; j++){
-         for (int i =0; i<240; i++){ 
+    //for (int j = 0; j<50; j++){
+         for (int i =0; i<10; i++){ 
+             printf("looping at i: %d\n",i);
             int n = rand() % 2; //picks if we should malloc or free.
             if (n == 0){ 
+                printf("malloc calling\n");
                 array3[i] = malloc(1);
             }
             else {
-                int random = rand() % 240; //will free a random space if it is filled.
+                printf("free calling\n");
+                int random = rand() % 10; //will free a random space if it is filled.
                  if (array3[random] == NULL){
 
                 }
@@ -73,21 +76,21 @@ int main(int argc, char**argv){
             }
 
         }
-    }
-    for (int i = 0; i < 240; i++) {
+    //}
+    for (int i = 0; i < 10; i++) {
     printf("array3: %p\n", array3[i]);
     }
-       
-       
-    //    for (int i = 0; i<240; i++){
-    //        if (array3[i] == NULL){
 
-    //        }
-    //        else{
-    //             free(array3[i]);  
-    //        }
-    //    }
-  
+       for (int i = 0; i<10; i++){
+           if (array3[i] == NULL){
+               printf("null node\n");
+           }
+           else{
+               printf("freeing node\n");
+                free(array3[i]);  
+        
+           }
+       }
 
 
     clock_t end3 = clock();

@@ -119,10 +119,6 @@ void myfree(void *p, char *file, int line){
     for (int i =0; i < nodeSize; i++){
         something[i] = '\0';
     }
-    for(int i = 0; i<100; i++){
-        printf("        %hhx\n", memory[i]);
-    }
-    printf("    Finished Printing!\n\n");
 
     //merging free blocks
     void *lastPointer=memory+MEMSIZE-OFFSET;
@@ -132,8 +128,11 @@ void myfree(void *p, char *file, int line){
     metadata *node;
     int tracker = 0;
     while(memBlock<=lastPointer){
+        tracker++;
+        printf("tracker: %d\n", tracker);
         node = (metadata*) memBlock;
         if(prev->free==0 && node->free==0){
+            printf("merging sizes: %ld, %ld\n", prev->size, node->size);
             prev->size=prev->size+node->size+METADATA;
             memBlock=memBlock+node->size+METADATA;
             node->size=0;
@@ -142,5 +141,11 @@ void myfree(void *p, char *file, int line){
             prev=(metadata*) memBlock;
             memBlock=memBlock+node->size+METADATA;
         }
-    }    
+    }
+
+    for(int i = 0; i<100; i++){
+        printf("        %hhx\n", memory[i]);
+    }
+    printf("    Finished Printing!\n\n");
+    
 }
