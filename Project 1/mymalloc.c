@@ -47,6 +47,12 @@ void *mymalloc(size_t size, char *file, int line){
                 printf("datasize1: %ld\n",data->size);
             }
             printf("datasize2: %ld\n",data->size);
+
+             for(int i = 0; i<100; i++){
+            printf("        %hhx\n", memory[i]);
+             }
+            printf("    Finished Printing!\n\n");
+
             return result;
         }
     }
@@ -55,32 +61,46 @@ void *mymalloc(size_t size, char *file, int line){
         void *lastPointer=memory+MEMSIZE-OFFSET;
         void *memBlock=memory;
         metadata *data;
+        int tracker = 0;
         while(memBlock<=lastPointer){
             data = (metadata*) memBlock;
+            tracker ++;
+            printf("Track: %d\n",tracker);
             if(data->free == 0){
+                printf("Inside If  Statement \n");
+                 printf("Inside if data.size: %ld\n",data->size);
                 if(data->size>=size){
                     result=memBlock+METADATA;
+                     printf("Inside if size: %ld\n",size);
                     int temp=size+METADATA;
+                    printf("Inside if temp: %d\n",temp);
                     data->free=1;
                     if(temp>data->size){
                         printf("Youre CUCKED \n");
                     }
                     else{
                         printf("size: %ld\n",size);
-                        data->size=size;
-                        void *freeBlock= memBlock+METADATA+data->size;
+                        void *freeBlock= memBlock+temp;
                         metadata *nextFree= (metadata*) freeBlock;
                         nextFree->free=0;
-                        nextFree->size=data->size-temp;
+                        nextFree->size= data->size-temp;
+                        data->size=size;
                         printf("nextsize: %ld\n",nextFree->size);
                         printf("datasize1: %ld\n",data->size);
                     }
                     printf("datasize2: %ld\n",data->size);
-                    return result;
+                  
+                    break;
                 }
             }
             memBlock=memBlock+data->size+METADATA;
         }
+
+         for(int i = 0; i<100; i++){
+            printf("        %hhx\n", memory[i]);
+        }
+            printf("    Finished Printing!\n\n");
+
     }
     return result;
 } 

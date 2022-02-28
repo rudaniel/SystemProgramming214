@@ -6,8 +6,13 @@
 
 
 int main(int argc, char**argv){
-  char* p= malloc(4079);
-  // char* p= malloc(10);
+  char* p= malloc(10);
+  char* pp = malloc(5);
+  char* ppp = malloc(15);
+
+  free(pp);
+
+  char* qq = malloc(3);
 
 //   for (int i = 0; i<10; i++){
 //     p[i] = 'a';
