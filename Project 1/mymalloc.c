@@ -59,7 +59,24 @@ void *mymalloc(size_t size, char *file, int line){
             data = (metadata*) memBlock;
             if(data->free == 0){
                 if(data->size>=size){
-
+                    result=memBlock+METADATA;
+                    int temp=size+METADATA;
+                    data->free=1;
+                    if(temp>data->size){
+                        printf("Youre CUCKED \n");
+                    }
+                    else{
+                        printf("size: %ld\n",size);
+                        data->size=size;
+                        void *freeBlock= memBlock+METADATA+data->size;
+                        metadata *nextFree= (metadata*) freeBlock;
+                        nextFree->free=0;
+                        nextFree->size=data->size-temp;
+                        printf("nextsize: %ld\n",nextFree->size);
+                        printf("datasize1: %ld\n",data->size);
+                    }
+                    printf("datasize2: %ld\n",data->size);
+                    return result;
                 }
             }
             memBlock=memBlock+data->size+METADATA;
