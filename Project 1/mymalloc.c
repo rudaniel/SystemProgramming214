@@ -107,51 +107,40 @@ void *mymalloc(size_t size, char *file, int line){
 
 void myfree(void *p, char *file, int line){
     printf("Myfree called from %s:%d\n", file, line);
-
-     void *checker =  memory; 
-    //  int *last = (int*) checker; //gets the remainder, it points to the next free position.
-
-    // printf("Remainder value: %d\n", *last);
-
-    // if(*last == 0){
-    //     printf("No Elements in Stack\n");
-    //     exit(EXIT_FAILURE);
-    // }
-
+    void *checker =  memory; 
     void *start =  p-METADATA; 
     void *pointerAddr = p;
-    
-    
-  
     metadata *data = (metadata*) start; //This is the Metadata of the Node we are currently freeing.
     size_t nodeSize = data->size;
-   // *last = *last-nodeSize-METADATA;
     printf("Free Data size Before %ld\n", data->size);
-    data->free = 0;                     //prayingi can free papi ;)
+    data->free = 0;
     printf("Free Data size %ld\n", data->size);
-
-    // char* shifter=(char*) start;
-    // int tempamount=MEMSIZE-*last-METADATA-nodeSize;
-    // int offset=METADATA+nodeSize;
-
     char * something = (char*) pointerAddr;
-
     for (int i =0; i < nodeSize; i++){
         something[i] = '\0';
     }
+    for(int i = 0; i<100; i++){
+        printf("        %hhx\n", memory[i]);
+    }
+    printf("    Finished Printing!\n\n");
 
-    // printf("HMMM What do we have here? The start of char array is %d\n", tempamount);
-    // for(int i=0; i<tempamount; i++){
-    //     (start+i)=*(start+i+offset);
-    // }
-
-
-
-  //  printf("Char Test: %c\n", *something);
-
-     for(int i = 0; i<100; i++){
-            printf("        %hhx\n", memory[i]);
+    //merging free blocks
+    void *lastPointer=memory+MEMSIZE-OFFSET;
+    void *memBlock=memory;
+    metadata *prev=memBlock;
+    memBlock=memBlock+prev->size+METADATA;
+    metadata *node;
+    int tracker = 0;
+    while(memBlock<=lastPointer){
+        node = (metadata*) memBlock;
+        if(prev->free==0 && node->free==0){
+            prev->size=prev->size+node->size+METADATA;
+            memBlock=memBlock+node->size+METADATA;
+            node->size=0;
         }
-        printf("    Finished Printing!\n\n");
-
+        else{
+            prev=(metadata*) memBlock;
+            memBlock=memBlock+node->size+METADATA;
+        }
+    }    
 }
