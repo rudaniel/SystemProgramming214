@@ -18,6 +18,7 @@ typedef struct metadata{
 void *mymalloc(size_t size, char *file, int line){
     printf("Mymalloc called from %s:%d\n", file, line);
     printf("Adding elements \n");
+    printf("Input Size %ld\n", size);
     void *memBlock =  memory;
     metadata *data = (metadata*) memBlock;
     void *result=NULL;
@@ -28,19 +29,24 @@ void *mymalloc(size_t size, char *file, int line){
             return NULL;
         }
         else{
-            data->size=size;
             data->free=1;
             result=memory+METADATA;
             int temp=size+METADATA+METADATA;
-            if(temp>=MEMSIZE){
+            if(temp>MEMSIZE){
+                data->size=MEMSIZE-METADATA;
                 printf("Youre CUCKED \n");
             }
             else{
+                printf("size: %ld\n",size);
+                data->size=size;
                 void *freeBlock= memory+temp-METADATA;
-                metadata *nextFree= (metadata*) memBlock;
+                metadata *nextFree= (metadata*) freeBlock;
                 nextFree->free=0;
                 nextFree->size=MEMSIZE-temp;
+                printf("nextsize: %ld\n",nextFree->size);
+                printf("datasize1: %ld\n",data->size);
             }
+            printf("datasize2: %ld\n",data->size);
             return result;
         }
     }
