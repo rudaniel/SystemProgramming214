@@ -7,13 +7,33 @@
 
 int main(int argc, char**argv){
   char* p= malloc(10);
+
+  for (int i = 0; i<10; i++){
+     p[i] = 'a';
+   }
+
+
   char* pp = malloc(5);
+
+     for (int i = 0; i<5; i++){
+     pp[i] = 'b';
+   }
+
   char* ppp = malloc(15);
+
+    for (int i = 0; i<15; i++){
+     ppp[i] = 'c';
+   }
 
   free(pp);
 
   char* qq = malloc(3);
 
+    for (int i = 0; i<3; i++){
+     qq[i] = 'd';
+   }
+
+  char* qqq = malloc(10);
 //   for (int i = 0; i<10; i++){
 //     p[i] = 'a';
 //   }
