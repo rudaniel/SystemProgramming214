@@ -18,51 +18,62 @@ typedef struct metadata{
 void *mymalloc(size_t size, char *file, int line){
     printf("Mymalloc called from %s:%d\n", file, line);
     printf("Adding elements \n");
-    void *lastBlock =  memory;
-    int *last=(int*) lastBlock;
-    printf("Beggining lastdata %d\n",*last);
-    void *memBlock =  memory+LASTDATA+*last;
-    metadata *data;
-    int s= MEMSIZE-(METADATA+LASTDATA+*last);
+    void *memBlock =  memory;
+    metadata *data = (metadata*) memBlock;
     void *result=NULL;
-    if(size>s){
-        printf("RETURNED NULL\n");
-    }
-    else{
-        data=(metadata*) memBlock;
-        printf("zero \n");
-        data->free = 1;
-        data->size = size;
-         if(*last==0){
-             result=memory+METADATA+LASTDATA;
+    if(data->size==0 && data->free==0){
+        printf("Fresh List\n");
+        if((size+METADATA)>MEMSIZE){
+            printf("RETURNED NULL \n");
+            return NULL;
         }
         else{
-            result=memory+METADATA+*last+LASTDATA;
+            data->size=size;
+            data->free=1;
+            result=memory+METADATA;
+            int temp=size+METADATA+METADATA;
+            if(temp>=MEMSIZE){
+                printf("Youre CUCKED \n");
+            }
+            else{
+                void *freeBlock= memory+temp-METADATA;
+                metadata *nextFree= (metadata*) memBlock;
+                nextFree->free=0;
+                nextFree->size=MEMSIZE-temp;
+            }
+            return result;
         }
-        *last=METADATA+size+*last;
-        printf("Ending lastdata %d\n",*last);
-        printf("\n    Printing Character Array For 75 Spaces... \n");
-        for(int i = 0; i<100; i++){
-            printf("        %hhx\n", memory[i]);
-        }
-        printf("    Finished Printing!\n\n");
-        printf("total bits %d\n",*last);
     }
-        return result;
+    else{
+        printf("Not New List\n");
+        void *lastPointer=memory+MEMSIZE-OFFSET;
+        void *memBlock=memory;
+        metadata *data;
+        while(memBlock<=lastPointer){
+            data = (metadata*) memBlock;
+            if(data->free == 0){
+                if(data->size>=size){
+
+                }
+            }
+            memBlock=memBlock+data->size+METADATA;
+        }
+    }
+    return result;
 } 
 
 void myfree(void *p, char *file, int line){
     printf("Myfree called from %s:%d\n", file, line);
 
      void *checker =  memory; 
-     int *last = (int*) checker; //gets the remainder, it points to the next free position.
+    //  int *last = (int*) checker; //gets the remainder, it points to the next free position.
 
-    printf("Remainder value: %d\n", *last);
+    // printf("Remainder value: %d\n", *last);
 
-    if(*last == 0){
-        printf("No Elements in Stack\n");
-        exit(EXIT_FAILURE);
-    }
+    // if(*last == 0){
+    //     printf("No Elements in Stack\n");
+    //     exit(EXIT_FAILURE);
+    // }
 
     void *start =  p-METADATA; 
     void *pointerAddr = p;
@@ -71,15 +82,14 @@ void myfree(void *p, char *file, int line){
   
     metadata *data = (metadata*) start; //This is the Metadata of the Node we are currently freeing.
     size_t nodeSize = data->size;
-    *last = *last-nodeSize-METADATA;
+   // *last = *last-nodeSize-METADATA;
     printf("Free Data size Before %ld\n", data->size);
-    data->size = 0;
     data->free = 0;                     //prayingi can free papi ;)
     printf("Free Data size %ld\n", data->size);
 
-    char* shifter=(char*) start;
-    int tempamount=MEMSIZE-*last-METADATA-nodeSize;
-    int offset=METADATA+nodeSize;
+    // char* shifter=(char*) start;
+    // int tempamount=MEMSIZE-*last-METADATA-nodeSize;
+    // int offset=METADATA+nodeSize;
 
     char * something = (char*) pointerAddr;
 
@@ -87,14 +97,14 @@ void myfree(void *p, char *file, int line){
         something[i] = '\0';
     }
 
-    printf("HMMM What do we have here? The start of char array is %d\n", tempamount);
-    for(int i=0; i<tempamount; i++){
-        shifter[i]=shifter[i+offset];
-    }
+    // printf("HMMM What do we have here? The start of char array is %d\n", tempamount);
+    // for(int i=0; i<tempamount; i++){
+    //     (start+i)=*(start+i+offset);
+    // }
 
 
 
-    printf("Char Test: %c\n", *something);
+  //  printf("Char Test: %c\n", *something);
 
      for(int i = 0; i<100; i++){
             printf("        %hhx\n", memory[i]);

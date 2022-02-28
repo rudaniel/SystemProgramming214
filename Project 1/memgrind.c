@@ -6,27 +6,37 @@
 
 
 int main(int argc, char**argv){
+  char* p= malloc(4074);
+  // char* p= malloc(10);
 
-  char* p= malloc(10);
+//   for (int i = 0; i<10; i++){
+//     p[i] = 'a';
+//   }
+//     //free(p);
+//   char* pp= malloc(15);
 
-  for (int i = 0; i<10; i++){
-    p[i] = 'a';
-  }
-    //free(p);
-  char* pp= malloc(15);
+//   for (int i = 0; i<15; i++){
+//     pp[i] = 'b';
+//   }
+//  free(p);
+//  // int *q =malloc(0);
+// char* pdfp= malloc(20);
+//  for (int i = 0; i<20; i++){
+//     pdfp[i] = 'c';
+//   }
+//   char* pdsdffp= malloc(10);
 
-  for (int i = 0; i<15; i++){
-    pp[i] = 'b';
-  }
- free(p);
- // int *q =malloc(0);
-char* pdfp= malloc(20);
- for (int i = 0; i<20; i++){
-    pdfp[i] = 'c';
-  }
-  char* pdsdffp= malloc(10);
+// for (int i = 0; i<10; i++){
+//     printf("Array p %c\n",p[i]);
+// }
 
-
+// for (int i = 0; i<15; i++){
+//    printf("Array pp %c\n",pp[i]);
+// }
+// for (int i = 0; i<20; i++){
+//      printf("Array pdfp %c\n",pdfp[i]);
+// }
+  
  // int* q= malloc(10);
 
 
