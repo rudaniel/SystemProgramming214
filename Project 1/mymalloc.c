@@ -17,15 +17,15 @@ typedef struct metadata{
 
 void *mymalloc(size_t size, char *file, int line){
     printf("Mymalloc called from %s:%d\n", file, line);
-    printf("Adding elements \n");
-    printf("Input Size %ld\n", size);
+    // printf("Adding elements \n");
+    // printf("Input Size %ld\n", size);
     void *memBlock =  memory;
     metadata *data = (metadata*) memBlock;
     void *result=NULL;
     if(data->size==0 && data->free==0){
-        printf("Fresh List\n");
+       // printf("Fresh List\n");
         if((size+METADATA)>MEMSIZE){
-            printf("RETURNED NULL \n");
+        //    printf("RETURNED NULL \n");
             return NULL;
         }
         else{
@@ -34,19 +34,19 @@ void *mymalloc(size_t size, char *file, int line){
             int temp=size+METADATA+METADATA;
             if(temp>MEMSIZE){
                 data->size=MEMSIZE-METADATA;
-                printf("Youre CUCKED \n");
+          //      printf("Youre CUCKED \n");
             }
             else{
-                printf("size: %ld\n",size);
+             //   printf("size: %ld\n",size);
                 data->size=size;
                 void *freeBlock= memory+temp-METADATA;
                 metadata *nextFree= (metadata*) freeBlock;
                 nextFree->free=0;
                 nextFree->size=MEMSIZE-temp;
-                printf("nextsize: %ld\n",nextFree->size);
-                printf("datasize1: %ld\n",data->size);
-            }
-            printf("datasize2: %ld\n",data->size);
+            //     printf("nextsize: %ld\n",nextFree->size);
+            //     printf("datasize1: %ld\n",data->size);
+             }
+           // printf("datasize2: %ld\n",data->size);
 
              for(int i = 0; i<100; i++){
             printf("        %hhx\n", memory[i]);
@@ -57,7 +57,7 @@ void *mymalloc(size_t size, char *file, int line){
         }
     }
     else{
-        printf("Not New List\n");
+       // printf("Not New List\n");
         void *lastPointer=memory+MEMSIZE-OFFSET;
         void *memBlock=memory;
         metadata *data;
@@ -65,30 +65,30 @@ void *mymalloc(size_t size, char *file, int line){
         while(memBlock<=lastPointer){
             data = (metadata*) memBlock;
             tracker ++;
-            printf("Track: %d\n",tracker);
+           // printf("Track: %d\n",tracker);
             if(data->free == 0){
-                printf("Inside If  Statement \n");
-                 printf("Inside if data.size: %ld\n",data->size);
+                // printf("Inside If  Statement \n");
+                //  printf("Inside if data.size: %ld\n",data->size);
                 if(data->size>=size){
                     result=memBlock+METADATA;
-                     printf("Inside if size: %ld\n",size);
+                    // printf("Inside if size: %ld\n",size);
                     int temp=size+METADATA;
-                    printf("Inside if temp: %d\n",temp);
+                  //  printf("Inside if temp: %d\n",temp);
                     data->free=1;
                     if(temp>data->size){
-                        printf("Youre CUCKED \n");
+                   //     printf("Youre CUCKED \n");
                     }
                     else{
-                        printf("size: %ld\n",size);
+                       // printf("size: %ld\n",size);
                         void *freeBlock= memBlock+temp;
                         metadata *nextFree= (metadata*) freeBlock;
                         nextFree->free=0;
                         nextFree->size= data->size-temp;
                         data->size=size;
-                        printf("nextsize: %ld\n",nextFree->size);
-                        printf("datasize1: %ld\n",data->size);
+                      //  printf("nextsize: %ld\n",nextFree->size);
+                      //  printf("datasize1: %ld\n",data->size);
                     }
-                    printf("datasize2: %ld\n",data->size);
+                  //  printf("datasize2: %ld\n",data->size);
                   
                     break;
                 }

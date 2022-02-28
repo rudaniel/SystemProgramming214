@@ -48,23 +48,22 @@ int main(int argc, char**argv){
 
 
     clock_t begin3 = clock();
-
     char *array3[240];
 
     
     for (int i = 0; i < 240; i++) {
     array3[i] = NULL;
+    printf("array3: %p\n", array3[i]);
     }
 
     for (int j = 0; j<50; j++){
          for (int i =0; i<240; i++){ 
             int n = rand() % 2; //picks if we should malloc or free.
-            if (n == 0){
-                char* a = malloc(1);
-                array3[i] = a;
+            if (n == 0){ 
+                array3[i] = malloc(1);
             }
             else {
-                int random = rand() % 120; //will free a random space if it is filled.
+                int random = rand() % 240; //will free a random space if it is filled.
                  if (array3[random] == NULL){
 
                 }
@@ -75,17 +74,19 @@ int main(int argc, char**argv){
 
         }
     }
+    for (int i = 0; i < 240; i++) {
+    printf("array3: %p\n", array3[i]);
+    }
        
-    
        
-       for (int i = 0; i<240; i++){
-           if (array3[i] == NULL){
+    //    for (int i = 0; i<240; i++){
+    //        if (array3[i] == NULL){
 
-           }
-           else{
-                free(array3[i]);  
-           }
-       }
+    //        }
+    //        else{
+    //             free(array3[i]);  
+    //        }
+    //    }
   
 
 
