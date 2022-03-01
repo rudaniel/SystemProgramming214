@@ -113,7 +113,7 @@ srand(time(0));
 
     clock_t end4 = clock();
     double time_spent4 = (double)((end4 - begin4) / CLOCKS_PER_SEC)/50;
-    printf("Time Taken for Test Case 4:  %f\n", time_spent3);
+    printf("Time Taken for Test Case 4:  %f\n", time_spent4);
 
     //Test Case 5
 
@@ -135,7 +135,7 @@ srand(time(0));
 
     clock_t end5 = clock();
     double time_spent5 = (double)((end5 - begin5) / CLOCKS_PER_SEC)/50;
-    printf("Time Taken for Test Case 4:  %f\n", time_spent5);
+    printf("Time Taken for Test Case 5:  %f\n", time_spent5);
 
 
 }
