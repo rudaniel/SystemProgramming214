@@ -107,10 +107,19 @@ void *mymalloc(size_t size, char *file, int line){
 
 void myfree(void *p, char *file, int line){
     printf("Myfree called from %s:%d\n", file, line);
+    void *lastPointer=memory+MEMSIZE-OFFSET;
     void *checker =  memory; 
+    if(p<checker||p>lastPointer){
+        printf("Address was not obtained from Malloc.\n");
+        return;
+    }
     void *start =  p-METADATA; 
     void *pointerAddr = p;
     metadata *data = (metadata*) start; //This is the Metadata of the Node we are currently freeing.
+    if(data->free==0){
+        printf("Address has been previously freed\n");
+        return;
+    }
     size_t nodeSize = data->size;
     printf("Free Data size Before %ld\n", data->size);
     data->free = 0;
@@ -121,7 +130,6 @@ void myfree(void *p, char *file, int line){
     }
 
     //merging free blocks
-    void *lastPointer=memory+MEMSIZE-OFFSET;
     void *memBlock=memory;
     metadata *prev=memBlock;
     memBlock=memBlock+prev->size+METADATA;

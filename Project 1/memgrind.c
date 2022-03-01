@@ -89,5 +89,11 @@ int main(int argc, char**argv){
   //   free(p);
   //   // gcc memgrind.c mymalloc.c -o test
   //   // ./filename
+
+  int p1;
+  free(&p1);
+  int* q= malloc(10);
+  free(q);
+  free(q);
     return EXIT_SUCCESS;
 }
