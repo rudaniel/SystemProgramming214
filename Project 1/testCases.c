@@ -19,7 +19,7 @@ srand(time(0));
     // }   
 
     clock_t end = clock();
-    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    double time_spent = (double)((end - begin) / CLOCKS_PER_SEC)/50;
 
     printf("Time Taken for Test Csase 1:  %f\n", time_spent); //CPU time used in seconds.
 
@@ -43,7 +43,7 @@ srand(time(0));
    
 
     clock_t end2 = clock();
-    double time_spent2 = (double)(end2 - begin2) / CLOCKS_PER_SEC;
+    double time_spent2 = (double)((end2 - begin2) / CLOCKS_PER_SEC)/50;
     printf("Time Taken for Test Csase 2:  %f\n", time_spent2);
 
 
