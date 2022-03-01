@@ -116,9 +116,12 @@ void myfree(void *p, char *file, int line){
     void *start =  p-METADATA; 
     void *pointerAddr = p;
     metadata *data = (metadata*) start; //This is the Metadata of the Node we are currently freeing.
+    if((data->size<0 || data->size > (MEMSIZE-METADATA))||(data->free!=0 && data->free!=1)){
+        printf("Invalid Memory Address.\n");
+        return;
+    }
     if(data->free==0){
-        printf("Address has been previously freed\n");
-         printf("Free Data size Before %ld\n", data->size);
+        printf("Address has been previously freed.\n");
         return;
     }
     size_t nodeSize = data->size;
