@@ -50,33 +50,28 @@ srand(time(0));
 
 
     clock_t begin3 = clock();
-    char *array3[240];
+    char *array3[120];
 
-    
-    for (int i = 0; i < 240; i++) {
-    array3[i] = NULL;
-    //printf("array3: %p\n", array3[i]);
+for(int l=0; l<50; l++){
+    for (int i = 0; i < 120; i++) {
+        array3[i] = NULL;
     }
-
-         for (int i =0; i<240; i++){ 
-             //printf("looping at i: %d\n",i);
-            int n = rand() % 2; //picks if we should malloc or free.
-            if (n == 0){ 
-                //printf("malloc calling\n");
-                array3[i] = malloc(1);
-            }
-            else {
-                //printf("free calling\n");
-                int random = rand() % 240; //will free a random space if it is filled.
-                free(array3[random]);
-            }
-
+    int k=0;
+    while(k<120){ 
+        int n = rand() % 2; //picks if we should malloc or free.
+        if (n == 0){ 
+            array3[k] = malloc(1);
+            k++;
         }
-
-       for (int i = 0; i<240; i++){
+        else {
+            int random = rand() % 120; //will free a random space if it is filled.
+            free(array3[random]);
+        }
+    }
+       for (int i = 0; i<120; i++){
             free(array3[i]);  
        }
-
+}
 
     clock_t end3 = clock();
 
