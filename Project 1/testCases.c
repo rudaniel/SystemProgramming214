@@ -10,13 +10,13 @@ srand(time(0));
     //Test Case 1
     clock_t begin = clock();
     
-    // for (int i =0; i<=50; i++)
-    // {
-    //     for (int i =0; i<=120; i++){
-    //         char* a = malloc(1);
-    //         free(a);
-    //     }
-    // }   
+    for (int i =0; i<=50; i++)
+    {
+        for (int i =0; i<=120; i++){
+            char* a = malloc(1);
+            free(a);
+        }
+    }   
 
     clock_t end = clock();
     double time_spent = (double)((end - begin) / CLOCKS_PER_SEC)/50;
@@ -30,16 +30,16 @@ srand(time(0));
     
     char *array[120];
 
-    // for (int i =0; i<50; i++){
-    //     for (int i =0; i<120; i++){
-    //         char* a = malloc(1);
-    //         array[i] = a;
-    //     }
+    for (int i =0; i<50; i++){
+        for (int i =0; i<120; i++){
+            char* a = malloc(1);
+            array[i] = a;
+        }
 
-    //     for (int i =0; i<120; i++){
-    //         free(array[i]);
-    //     }
-    // }
+        for (int i =0; i<120; i++){
+            free(array[i]);
+        }
+    }
    
 
     clock_t end2 = clock();
@@ -48,16 +48,15 @@ srand(time(0));
 
 
     clock_t begin3 = clock();
-    char *array3[10];
+    char *array3[240];
 
     
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 240; i++) {
     array3[i] = NULL;
     printf("array3: %p\n", array3[i]);
     }
 
-  //  for (int j = 0; j<50; j++){
-         for (int i =0; i<10; i++){ 
+         for (int i =0; i<240; i++){ 
              printf("looping at i: %d\n",i);
             int n = rand() % 2; //picks if we should malloc or free.
             if (n == 0){ 
@@ -66,7 +65,7 @@ srand(time(0));
             }
             else {
                 printf("free calling\n");
-                int random = rand() % 10; //will free a random space if it is filled.
+                int random = rand() % 240; //will free a random space if it is filled.
                  if (array3[random] == NULL){
 
                 }
@@ -76,12 +75,8 @@ srand(time(0));
             }
 
         }
-  //  }
-    for (int i = 0; i < 10; i++) {
-    printf("array3: %p\n", array3[i]);
-    }
 
-       for (int i = 0; i<10; i++){
+       for (int i = 0; i<240; i++){
            if (array3[i] == NULL){
                printf("null node\n");
            }
@@ -94,8 +89,54 @@ srand(time(0));
 
 
     clock_t end3 = clock();
-    double time_spent3 = (double)(end3 - begin3) / CLOCKS_PER_SEC;
+    double time_spent3 = (double)((end3 - begin3) / CLOCKS_PER_SEC)/50;
     printf("Time Taken for Test Csase 3:  %f\n", time_spent3);
+
+     //Test Case 4
+
+    clock_t begin4 = clock();
+
+    for (int i =0; i<50; i++){
+    char* a = malloc(1000);
+    char* b = malloc(1000);
+    char* c = malloc(1000);
+    char* d = malloc(1000);
+
+    free(a);
+    free(b);
+    free(c);
+    free(d);
+    char* megaNode = malloc(4000); //Testing merging free Node.
+    free(megaNode);
+    }
+
+
+    clock_t end4 = clock();
+    double time_spent4 = (double)((end4 - begin4) / CLOCKS_PER_SEC)/50;
+    printf("Time Taken for Test Case 4:  %f\n", time_spent3);
+
+    //Test Case 5
+
+    clock_t begin5 = clock();
+
+    for (int i =0; i<50; i++){
+    char* z = malloc(50);
+    for(int i =0;  i<50;i++){
+        z[i] = 'c';
+    }
+    free(z);
+    char* x = malloc(10); //The user wont receive all 50 bytes because we can do it with less.
+     for(int i =0;  i<10;i++){
+        x[i] = 'c';
+    }
+    free(x);
+    }
+
+
+    clock_t end5 = clock();
+    double time_spent5 = (double)((end5 - begin5) / CLOCKS_PER_SEC)/50;
+    printf("Time Taken for Test Case 4:  %f\n", time_spent5);
+
 
 }
 
