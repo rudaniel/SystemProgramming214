@@ -19,10 +19,10 @@ srand(time(0));
     }   
 
     clock_t end = clock();
-    double time_spent = (double)((end - begin) / CLOCKS_PER_SEC)/50;
+    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 
-    printf("Time Taken for Test Csase 1:  %f\n", time_spent); //CPU time used in seconds.
-
+    printf("Total Time Taken for Test Case 1:  %f\n", time_spent); //CPU time used in seconds.
+    printf("Average Time Taken for Test Case 1:  %f\n", time_spent/50);
 
     //Test Case 2
 
@@ -43,8 +43,10 @@ srand(time(0));
    
 
     clock_t end2 = clock();
-    double time_spent2 = (double)((end2 - begin2) / CLOCKS_PER_SEC)/50;
-    printf("Time Taken for Test Csase 2:  %f\n", time_spent2);
+    double time_spent2 = (double)(end2 - begin2) / CLOCKS_PER_SEC;
+
+    printf("Total Time Taken for Test Case 2:  %f\n", time_spent2); //CPU time used in seconds.
+    printf("Average Time Taken for Test Case 2:  %f\n", time_spent2/50);
 
 
     clock_t begin3 = clock();
@@ -53,44 +55,35 @@ srand(time(0));
     
     for (int i = 0; i < 240; i++) {
     array3[i] = NULL;
-    printf("array3: %p\n", array3[i]);
+    //printf("array3: %p\n", array3[i]);
     }
 
          for (int i =0; i<240; i++){ 
-             printf("looping at i: %d\n",i);
+             //printf("looping at i: %d\n",i);
             int n = rand() % 2; //picks if we should malloc or free.
             if (n == 0){ 
-                printf("malloc calling\n");
+                //printf("malloc calling\n");
                 array3[i] = malloc(1);
             }
             else {
-                printf("free calling\n");
+                //printf("free calling\n");
                 int random = rand() % 240; //will free a random space if it is filled.
-                 if (array3[random] == NULL){
-
-                }
-                else{
-                free(array3[random]);  
-                }
+                free(array3[random]);
             }
 
         }
 
        for (int i = 0; i<240; i++){
-           if (array3[i] == NULL){
-               printf("null node\n");
-           }
-           else{
-               printf("freeing node\n");
-                free(array3[i]);  
-        
-           }
+            free(array3[i]);  
        }
 
 
     clock_t end3 = clock();
-    double time_spent3 = (double)((end3 - begin3) / CLOCKS_PER_SEC)/50;
-    printf("Time Taken for Test Csase 3:  %f\n", time_spent3);
+
+    double time_spent3 = (double)(end3 - begin3) / CLOCKS_PER_SEC;
+
+    printf("Total Time Taken for Test Case 3:  %f\n", time_spent3); //CPU time used in seconds.
+    printf("Average Time Taken for Test Case 3:  %f\n", time_spent3/50);
 
      //Test Case 4
 
@@ -112,8 +105,11 @@ srand(time(0));
 
 
     clock_t end4 = clock();
-    double time_spent4 = (double)((end4 - begin4) / CLOCKS_PER_SEC)/50;
-    printf("Time Taken for Test Case 4:  %f\n", time_spent4);
+
+    double time_spent4 = (double)(end4 - begin4) / CLOCKS_PER_SEC;
+
+    printf("Total Time Taken for Test Case 4:  %f\n", time_spent4); //CPU time used in seconds.
+    printf("Average Time Taken for Test Case 4:  %f\n", time_spent4/50);
 
     //Test Case 5
 
@@ -134,9 +130,10 @@ srand(time(0));
 
 
     clock_t end5 = clock();
-    double time_spent5 = (double)((end5 - begin5) / CLOCKS_PER_SEC)/50;
-    printf("Time Taken for Test Case 5:  %f\n", time_spent5);
 
+    double time_spent5 = (double)(end5 - begin5) / CLOCKS_PER_SEC;
 
+    printf("Total Time Taken for Test Case 5:  %f\n", time_spent5); //CPU time used in seconds.
+    printf("Average Time Taken for Test Case 5:  %f\n", time_spent5/50);
 }
 

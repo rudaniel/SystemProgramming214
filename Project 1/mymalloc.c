@@ -15,7 +15,7 @@ typedef struct metadata{
 } metadata;
 
 void *mymalloc(size_t size, char *file, int line){
-    printf("Mymalloc called from %s:%d\n", file, line);
+    //printf("Mymalloc called from %s:%d\n", file, line);
     void *memBlock =  memory;
     metadata *data = (metadata*) memBlock;
     void *result=NULL;
@@ -71,7 +71,12 @@ void *mymalloc(size_t size, char *file, int line){
 } 
 
 void myfree(void *p, char *file, int line){
-    printf("Myfree called from %s:%d\n", file, line);
+    //printf("Myfree called from %s:%d\n", file, line);
+    if(p==NULL){
+        printf("Pointer cannot be NULL. ");
+        printf("At " __FILE__ ":%d\n", __LINE__);
+        return;
+    }
     void *lastPointer=memory+MEMSIZE-OFFSET;
     void *checker =  memory; 
     if(p<checker||p>lastPointer){

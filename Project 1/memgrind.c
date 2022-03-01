@@ -92,11 +92,12 @@ int main(int argc, char**argv){
 
   //int p1;
   //free(&p1);
+  free(NULL);
   char * q = malloc(4000);
   for (int i =0; i < 4000; i++){
     q[i] = 'a';
   }
-  char * t = malloc(1);
+  // char * t = malloc(1);
   free(q+1);
   //free(q);
     return EXIT_SUCCESS;
