@@ -56,7 +56,7 @@ srand(time(0));
     printf("array3: %p\n", array3[i]);
     }
 
-    //for (int j = 0; j<50; j++){
+  //  for (int j = 0; j<50; j++){
          for (int i =0; i<10; i++){ 
              printf("looping at i: %d\n",i);
             int n = rand() % 2; //picks if we should malloc or free.
@@ -76,7 +76,7 @@ srand(time(0));
             }
 
         }
-    //}
+  //  }
     for (int i = 0; i < 10; i++) {
     printf("array3: %p\n", array3[i]);
     }

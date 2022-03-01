@@ -118,6 +118,7 @@ void myfree(void *p, char *file, int line){
     metadata *data = (metadata*) start; //This is the Metadata of the Node we are currently freeing.
     if(data->free==0){
         printf("Address has been previously freed\n");
+         printf("Free Data size Before %ld\n", data->size);
         return;
     }
     size_t nodeSize = data->size;

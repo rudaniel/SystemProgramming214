@@ -6,34 +6,34 @@
 
 
 int main(int argc, char**argv){
-  char* p= malloc(10);
+  // char* p= malloc(10);
 
-  for (int i = 0; i<10; i++){
-     p[i] = 'a';
-   }
+  // for (int i = 0; i<10; i++){
+  //    p[i] = 'a';
+  //  }
 
 
-  char* pp = malloc(5);
+  // char* pp = malloc(5);
 
-     for (int i = 0; i<5; i++){
-     pp[i] = 'b';
-   }
+  //    for (int i = 0; i<5; i++){
+  //    pp[i] = 'b';
+  //  }
 
-  char* ppp = malloc(15);
+  // char* ppp = malloc(15);
 
-    for (int i = 0; i<15; i++){
-     ppp[i] = 'c';
-   }
+  //   for (int i = 0; i<15; i++){
+  //    ppp[i] = 'c';
+  //  }
 
-  free(pp);
+  // free(pp);
 
-  char* qq = malloc(3);
+  // char* qq = malloc(3);
 
-    for (int i = 0; i<3; i++){
-     qq[i] = 'd';
-   }
+  //   for (int i = 0; i<3; i++){
+  //    qq[i] = 'd';
+  //  }
 
-  char* qqq = malloc(10);
+  // char* qqq = malloc(10);
 //   for (int i = 0; i<10; i++){
 //     p[i] = 'a';
 //   }
@@ -90,10 +90,14 @@ int main(int argc, char**argv){
   //   // gcc memgrind.c mymalloc.c -o test
   //   // ./filename
 
-  int p1;
-  free(&p1);
-  int* q= malloc(10);
-  free(q);
-  free(q);
+  //int p1;
+  //free(&p1);
+  char * q = malloc(4000);
+  for (int i =0; i < 4000; i++){
+    q[i] = 'a';
+  }
+  char * t = malloc(1);
+  free(q+1);
+  //free(q);
     return EXIT_SUCCESS;
 }
