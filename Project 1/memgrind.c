@@ -6,99 +6,49 @@
 
 
 int main(int argc, char**argv){
-  // char* p= malloc(10);
 
-  // for (int i = 0; i<10; i++){
-  //    p[i] = 'a';
-  //  }
+  int x;
+  free(&x);
 
+  int *p = malloc(sizeof(int)*100);
+  free(p+1);
+  free(p);
 
-  // char* pp = malloc(5);
+  int *w = malloc(sizeof(int)*100);
+  int *q = w;
+  free(w);
+  free(q);  
 
-  //    for (int i = 0; i<5; i++){
-  //    pp[i] = 'b';
-  //  }
+  char *r = malloc(10);
+  char *s = malloc(5);
+  free(s);
+  char *bestTA = malloc(10);
 
-  // char* ppp = malloc(15);
+  char *o = malloc(4097); 
 
-  //   for (int i = 0; i<15; i++){
-  //    ppp[i] = 'c';
-  //  }
+  char *c = malloc(120); 
+  free(c);
+  char *g = malloc(1); 
 
-  // free(pp);
-
-  // char* qq = malloc(3);
-
-  //   for (int i = 0; i<3; i++){
-  //    qq[i] = 'd';
-  //  }
-
-  // char* qqq = malloc(10);
-//   for (int i = 0; i<10; i++){
-//     p[i] = 'a';
-//   }
-//     //free(p);
-//   char* pp= malloc(15);
-
-//   for (int i = 0; i<15; i++){
-//     pp[i] = 'b';
-//   }
-//  free(p);
-//  // int *q =malloc(0);
-// char* pdfp= malloc(20);
-//  for (int i = 0; i<20; i++){
-//     pdfp[i] = 'c';
-//   }
-//   char* pdsdffp= malloc(10);
-
-// for (int i = 0; i<10; i++){
-//     printf("Array p %c\n",p[i]);
-// }
-
-// for (int i = 0; i<15; i++){
-//    printf("Array pp %c\n",pp[i]);
-// }
-// for (int i = 0; i<20; i++){
-//      printf("Array pdfp %c\n",pdfp[i]);
-// }
-  
- // int* q= malloc(10);
-
-
-//int* pp= malloc(25);
-
-
-
-//int* ppp= malloc(5);
-
-//int* breaker= malloc(4021);
-
-
-
-  //   int *p = malloc(10);
-
-  //   for(int i = 0; i <10; i++){
-  //       p[i] = i;
-  //   }
-
-  //   int *q = malloc(10);
-    
-  // //  for(int i = 0; i <1024; i++){
-  // //        printf( "%d: \n", p[i]);
-  // //  }
-  //   free(p); 
-  //   // gcc memgrind.c mymalloc.c -o test
-  //   // ./filename
-
-  //int p1;
-  //free(&p1);
-  free(NULL);
-  char * q = malloc(4000);
-  for (int i =0; i < 4000; i++){
-    q[i] = 'a';
+  //Below calls malloc fills the data and frees in the middle.
+  //Shows no overwritten/lost data.
+  char* fill = malloc(10);
+  for (int i = 0; i<10; i++){
+    fill[i] = 'a';
   }
-  // char * t = malloc(1);
-  free(q+1);
-  //free(q);
+  char* pp = malloc(5);
+  for (int i = 0; i<5; i++){
+    pp[i] = 'b';
+  }
+  char* ppp = malloc(15);
+  for (int i = 0; i<15; i++){
+    ppp[i] = 'c';
+  }
+  free(pp);
+  char* qq = malloc(3);
+  for (int i = 0; i<3; i++){
+    qq[i] = 'd';
+  }
+
     return EXIT_SUCCESS;
 }
