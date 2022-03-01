@@ -86,7 +86,7 @@ int main(int argc, char**argv){
   // //  for(int i = 0; i <1024; i++){
   // //        printf( "%d: \n", p[i]);
   // //  }
-  //   free(p);
+  //   free(p); 
   //   // gcc memgrind.c mymalloc.c -o test
   //   // ./filename
 

@@ -8,7 +8,6 @@
 #define LASTDATA 4 
 #define OFFSET 1
 static char memory[MEMSIZE];
-static int MEMUSED = 0;
 
 typedef struct metadata{
     size_t size;
@@ -48,10 +47,10 @@ void *mymalloc(size_t size, char *file, int line){
              }
            // printf("datasize2: %ld\n",data->size);
 
-             for(int i = 0; i<100; i++){
-            printf("        %hhx\n", memory[i]);
-             }
-            printf("    Finished Printing!\n\n");
+            //  for(int i = 0; i<100; i++){
+            // printf("        %hhx\n", memory[i]);
+            //  }
+            // printf("    Finished Printing!\n\n");
 
             return result;
         }
@@ -61,10 +60,8 @@ void *mymalloc(size_t size, char *file, int line){
         void *lastPointer=memory+MEMSIZE-OFFSET;
         void *memBlock=memory;
         metadata *data;
-        int tracker = 0;
         while(memBlock<=lastPointer){
             data = (metadata*) memBlock;
-            tracker ++;
            // printf("Track: %d\n",tracker);
             if(data->free == 0){
                 // printf("Inside If  Statement \n");
@@ -96,10 +93,10 @@ void *mymalloc(size_t size, char *file, int line){
             memBlock=memBlock+data->size+METADATA;
         }
 
-         for(int i = 0; i<100; i++){
-            printf("        %hhx\n", memory[i]);
-        }
-            printf("    Finished Printing!\n\n");
+        //  for(int i = 0; i<100; i++){
+        //     printf("        %hhx\n", memory[i]);
+        // }
+        //     printf("    Finished Printing!\n\n");
 
     }
     return result;
@@ -110,24 +107,30 @@ void myfree(void *p, char *file, int line){
     void *lastPointer=memory+MEMSIZE-OFFSET;
     void *checker =  memory; 
     if(p<checker||p>lastPointer){
-        printf("Address was not obtained from Malloc.\n");
+        printf("Address was not obtained from Malloc. ");
+        printf("At " __FILE__ ":%d\n", __LINE__);
+        //exit(EXIT_FAILURE);
         return;
     }
     void *start =  p-METADATA; 
     void *pointerAddr = p;
     metadata *data = (metadata*) start; //This is the Metadata of the Node we are currently freeing.
     if((data->size<0 || data->size > (MEMSIZE-METADATA))||(data->free!=0 && data->free!=1)){
-        printf("Invalid Memory Address.\n");
+        printf("Invalid Memory Address. ");
+        printf("At " __FILE__ ":%d\n", __LINE__);
+        //exit(EXIT_FAILURE);
         return;
     }
     if(data->free==0){
-        printf("Address has been previously freed.\n");
+        printf("Address has been previously freed. ");
+        printf("At " __FILE__ ":%d\n", __LINE__);
+        //exit(EXIT_FAILURE);
         return;
     }
     size_t nodeSize = data->size;
-    printf("Free Data size Before %ld\n", data->size);
+    //printf("Free Data size Before %ld\n", data->size);
     data->free = 0;
-    printf("Free Data size %ld\n", data->size);
+    //printf("Free Data size %ld\n", data->size);
     char * something = (char*) pointerAddr;
     for (int i =0; i < nodeSize; i++){
         something[i] = '\0';
@@ -138,13 +141,10 @@ void myfree(void *p, char *file, int line){
     metadata *prev=memBlock;
     memBlock=memBlock+prev->size+METADATA;
     metadata *node;
-    int tracker = 0;
     while(memBlock<=lastPointer){
-        tracker++;
-        printf("tracker: %d\n", tracker);
         node = (metadata*) memBlock;
         if(prev->free==0 && node->free==0){
-            printf("merging sizes: %ld, %ld\n", prev->size, node->size);
+            //printf("merging sizes: %ld, %ld\n", prev->size, node->size);
             prev->size=prev->size+node->size+METADATA;
             memBlock=memBlock+node->size+METADATA;
             node->size=0;
@@ -155,9 +155,9 @@ void myfree(void *p, char *file, int line){
         }
     }
 
-    for(int i = 0; i<100; i++){
-        printf("        %hhx\n", memory[i]);
-    }
-    printf("    Finished Printing!\n\n");
+    // for(int i = 0; i<100; i++){
+    //     printf("        %hhx\n", memory[i]);
+    // }
+    // printf("    Finished Printing!\n\n");
     
 }
