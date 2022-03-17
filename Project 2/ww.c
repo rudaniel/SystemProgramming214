@@ -71,6 +71,49 @@ int helper(char line[], int width, int space){
         return totalWords; //TODO code proper spacing 
 }
 
+void fileWrapper(FILE *in, FILE *out){
+    int newLine=0;
+    char buf[BUFFER];
+    int myWidth = 30;
+    int currentWidth = 0;
+    int totalWords = 0; //current space at the start
+    char *word;
+    while(fgets(buf, BUFFER, in)){
+        if(buf[0]=='\n'){
+            if(newLine==0){
+                //printf("NewLine\n");
+                fprintf(out, "\n\r");
+                newLine=1;
+            }
+        }
+        else{
+            newLine=0;
+            buf[strcspn(buf, "\n")] = '\0'; //removes new line character from the end.
+            // totalWords = helper(buf, myWidth, totalWords); //the helper function will write into the file and return total words.
+            //printf("Total Word: %d\n", totalWords);
+            word = strtok (buf," ");
+            //printf( "Size of word:%ld\n", strlen(word));
+            while (word != NULL)
+            {
+                //printf( "Size of word:%ld\n", strlen(word));
+                //printf ("%s\n",word);
+                currentWidth =  currentWidth + strlen(word)+1;
+
+                if(currentWidth <= myWidth){
+                    fprintf(out, "%s ", word);
+                }
+                else{
+                     fprintf(out, "\n");
+                     fprintf(out, "%s ", word);
+                     currentWidth = 0;
+                     currentWidth = currentWidth + strlen(word)+1;
+                }
+                word = strtok (NULL, " ");
+            }
+        }
+      //  break;
+    }
+}
 
 int main(){
 
@@ -88,48 +131,48 @@ int main(){
         printf("File unable to open.");
         exit(1);
     }
+    fileWrapper(unwrapped, solution);
+    // int newLine=0;
+    // char buf[BUFFER];
+    // int myWidth = 30;
+    // int currentWidth = 0;
+    // int totalWords = 0; //current space at the start
+    // char *word;
+    // while(fgets(buf, BUFFER, unwrapped)){
+    //     if(buf[0]=='\n'){
+    //         if(newLine==0){
+    //             printf("NewLine\n");
+    //             fprintf(solution, "\n\r");
+    //             newLine=1;
+    //         }
+    //     }
+    //     else{
+    //         newLine=0;
+    //         buf[strcspn(buf, "\n")] = '\0'; //removes new line character from the end.
+    //         // totalWords = helper(buf, myWidth, totalWords); //the helper function will write into the file and return total words.
+    //         //printf("Total Word: %d\n", totalWords);
+    //         word = strtok (buf," ");
+    //         //printf( "Size of word:%ld\n", strlen(word));
+    //         while (word != NULL)
+    //         {
+    //             printf( "Size of word:%ld\n", strlen(word));
+    //             printf ("%s\n",word);
+    //             currentWidth =  currentWidth + strlen(word)+1;
 
-    int newLine=0;
-    char buf[BUFFER];
-    int myWidth = 30;
-    int currentWidth = 0;
-    int totalWords = 0; //current space at the start
-    char *word;
-    while(fgets(buf, BUFFER, unwrapped)){
-        if(buf[0]=='\n'){
-            if(newLine==0){
-                printf("NewLine\n");
-                fprintf(solution, "\n\r");
-                newLine=1;
-            }
-        }
-        else{
-            newLine=0;
-            buf[strcspn(buf, "\n")] = '\0'; //removes new line character from the end.
-            // totalWords = helper(buf, myWidth, totalWords); //the helper function will write into the file and return total words.
-            //printf("Total Word: %d\n", totalWords);
-            word = strtok (buf," ");
-            //printf( "Size of word:%ld\n", strlen(word));
-            while (word != NULL)
-            {
-                printf( "Size of word:%ld\n", strlen(word));
-                printf ("%s\n",word);
-                currentWidth =  currentWidth + strlen(word)+1;
-
-                if(currentWidth <= myWidth){
-                    fprintf(solution, "%s ", word);
-                }
-                else{
-                     fprintf(solution, "\n");
-                     fprintf(solution, "%s ", word);
-                     currentWidth = 0;
-                     currentWidth = currentWidth + strlen(word)+1;
-                }
-                word = strtok (NULL, " ");
-            }
-        }
-      //  break;
-    }
+    //             if(currentWidth <= myWidth){
+    //                 fprintf(solution, "%s ", word);
+    //             }
+    //             else{
+    //                  fprintf(solution, "\n");
+    //                  fprintf(solution, "%s ", word);
+    //                  currentWidth = 0;
+    //                  currentWidth = currentWidth + strlen(word)+1;
+    //             }
+    //             word = strtok (NULL, " ");
+    //         }
+    //     }
+    //   //  break;
+    // }
 
     fclose(unwrapped);
     fclose(solution);
