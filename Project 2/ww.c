@@ -71,6 +71,7 @@ int helper(char line[], int width, int space){
         return totalWords; //TODO code proper spacing 
 }
 
+
 int main(){
 
     //gcc ww.c -o ww
@@ -91,12 +92,14 @@ int main(){
     int newLine=0;
     char buf[BUFFER];
     int myWidth = 20;
+    int currentWidth = 0;
     int totalWords = 0; //current space at the start
     char *word;
     while(fgets(buf, BUFFER, unwrapped)){
         if(buf[0]=='\n'){
             if(newLine==0){
                 printf("NewLine\n");
+                fprintf(solution, "\n");
                 newLine=1;
             }
         }
@@ -111,6 +114,17 @@ int main(){
             {
                 printf( "Size of word:%ld\n", strlen(word));
                 printf ("%s\n",word);
+                currentWidth =  currentWidth + strlen(word)+1;
+
+                if(currentWidth <= myWidth){
+                    fprintf(solution, "%s ", word);
+                }
+                else{
+                     fprintf(solution, "\n");
+                     fprintf(solution, "%s ", word);
+                     currentWidth = 0;
+                     currentWidth = currentWidth + strlen(word)+1;
+                }
                 word = strtok (NULL, " ");
             }
         }
