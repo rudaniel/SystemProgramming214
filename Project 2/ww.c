@@ -88,29 +88,31 @@ int main(){
         exit(1);
     }
 
-
+    int newLine=0;
     char buf[BUFFER];
     int myWidth = 20;
     int totalWords = 0; //current space at the start
     char *word;
     while(fgets(buf, BUFFER, unwrapped)){
         if(buf[0]=='\n'){
-            printf("NewLine\n");
+            if(newLine==0){
+                printf("NewLine\n");
+                newLine=1;
+            }
         }
         else{
-        buf[strcspn(buf, "\n")] = '\0'; //removes new line character from the end.
-       // totalWords = helper(buf, myWidth, totalWords); //the helper function will write into the file and return total words.
-        //printf("Total Word: %d\n", totalWords);
-        word = strtok (buf," ");
-        //printf( "Size of word:%ld\n", strlen(word));
-        while (word != NULL)
-       {
-         printf( "Size of word:%ld\n", strlen(word));
-         printf ("%s\n",word);
-         word = strtok (NULL, " ");
-
-        
-       }
+            newLine=0;
+            buf[strcspn(buf, "\n")] = '\0'; //removes new line character from the end.
+            // totalWords = helper(buf, myWidth, totalWords); //the helper function will write into the file and return total words.
+            //printf("Total Word: %d\n", totalWords);
+            word = strtok (buf," ");
+            //printf( "Size of word:%ld\n", strlen(word));
+            while (word != NULL)
+            {
+                printf( "Size of word:%ld\n", strlen(word));
+                printf ("%s\n",word);
+                word = strtok (NULL, " ");
+            }
         }
       //  break;
     }
