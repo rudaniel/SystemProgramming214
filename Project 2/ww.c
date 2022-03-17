@@ -12,11 +12,13 @@ typedef struct node{
 int helper(char line[], int width, int space){
     char copy[BUFFER];
     strncpy(copy, line, BUFFER);
-    int totalWords = 0; //I want to create an array that holds whole words not letters like below. This will tell us home many words there is.
+    int totalWords = 1; //I want to create an array that holds whole words not letters like below. This will tell us home many words there is.
     int charCount = 0;
     int spaceChecker =0;
+    char wordArray[BUFFER];
+    char temp[BUFFER] = "";
     //char temp[]='\0';
-    if(copy[0]=='\n'){
+    if(copy[0]=='\0'){       //this is already checked in the for loop lol.
         printf("new line\n");
     }
     else{
@@ -40,7 +42,7 @@ int helper(char line[], int width, int space){
                 totalWords++;
                 }
                 spaceChecker = 1;
-                printf("\n");
+            //    printf("\n");
             }
             else{/*
                 if(temp==" "){
@@ -49,7 +51,9 @@ int helper(char line[], int width, int space){
                 else{	
                     strcat(temp, copy[i]);
                  }
-                 */printf("%c", copy[i]); //This code goes through each line of the file and is able to sperate those lines by words
+                 */
+               //  strcat(temp, &copy[i]);
+            //     printf("%c", copy[i]); //This code goes through each line of the file and is able to sperate those lines by words
                  spaceChecker = 0;
                  charCount = 1;
               //   printf("\n");
@@ -59,7 +63,7 @@ int helper(char line[], int width, int space){
         if(charCount ==1 && totalWords ==0){
             totalWords++;
         }
-        printf("\n");
+     //   printf("\n");
         printf("Total Word: %d\n", totalWords);
         //printf("charCount: %d\n", charCount);
         return space; //TODO code proper spacing 
@@ -76,17 +80,35 @@ int main(){
         exit(1);
     }
 
+    FILE *solution = fopen("solution.txt", "w");
+    if(unwrapped == NULL){
+        printf("File unable to open.");
+        exit(1);
+    }
+
+
     char buf[BUFFER];
     int myWidth = 20;
-    int space = 20; //current space at the start
-
+    int totalWords = 0; //current space at the start
+    char *word;
     while(fgets(buf, BUFFER, unwrapped)){
-     
-        space = helper(buf, myWidth, space); //the helper function will write into the file and return space avail for next line.
+        buf[strcspn(buf, "\n")] = '\0'; //removes new line character from the end.
+        totalWords = helper(buf, myWidth, totalWords); //the helper function will write into the file and return total words.
+        word = strtok (buf," ");
+        //printf( "Size of word:%ld\n", strlen(word));
+        while (word != NULL)
+       {
+         printf( "Size of word:%ld\n", strlen(word));
+         printf ("%s\n",word);
+         word = strtok (NULL, " ");
+
+        
+       }
       //  break;
     }
 
     fclose(unwrapped);
+    fclose(solution);
 }
 
 
