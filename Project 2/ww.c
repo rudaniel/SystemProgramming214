@@ -129,6 +129,9 @@ void consoleWrapper(FILE *in){
                 printf("\n");
                 newLine=1;
             }
+            else{
+                printf("\n\n");
+            }
         }
         else{
             newLine=0;
@@ -148,6 +151,7 @@ void consoleWrapper(FILE *in){
                 }
                 else{
                      printf("\n");
+                     newLine=1;
                      printf("%s ", word);
                      currentWidth = 0;
                      currentWidth = currentWidth + strlen(word)+1;
@@ -175,7 +179,7 @@ int main(){
         printf("File unable to open.");
         exit(1);
     }
-  //  fileWrapper(unwrapped, solution);
+    //fileWrapper(unwrapped, solution);
     consoleWrapper(unwrapped);
     // int newLine=0;
     // char buf[BUFFER];
