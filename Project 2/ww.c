@@ -115,6 +115,50 @@ void fileWrapper(FILE *in, FILE *out){
     }
 }
 
+void consoleWrapper(FILE *in){
+    int newLine=0;
+    char buf[BUFFER];
+    int myWidth = 30;
+    int currentWidth = 0;
+    int totalWords = 0; //current space at the start
+    char *word;
+    while(fgets(buf, BUFFER, in)){
+        if(buf[0]=='\n'){
+            if(newLine==0){
+                //printf("NewLine\n");
+                printf("\n");
+                newLine=1;
+            }
+        }
+        else{
+            newLine=0;
+            buf[strcspn(buf, "\n")] = '\0'; //removes new line character from the end.
+            // totalWords = helper(buf, myWidth, totalWords); //the helper function will write into the file and return total words.
+            //printf("Total Word: %d\n", totalWords);
+            word = strtok (buf," ");
+            //printf( "Size of word:%ld\n", strlen(word));
+            while (word != NULL)
+            {
+                //printf( "Size of word:%ld\n", strlen(word));
+                //printf ("%s\n",word);
+                currentWidth =  currentWidth + strlen(word)+1;
+
+                if(currentWidth <= myWidth){
+                    printf("%s ", word);
+                }
+                else{
+                     printf("\n");
+                     printf("%s ", word);
+                     currentWidth = 0;
+                     currentWidth = currentWidth + strlen(word)+1;
+                }
+                word = strtok (NULL, " ");
+            }
+        }
+      //  break;
+    }
+}
+
 int main(){
 
     //gcc ww.c -o ww
@@ -131,7 +175,8 @@ int main(){
         printf("File unable to open.");
         exit(1);
     }
-    fileWrapper(unwrapped, solution);
+  //  fileWrapper(unwrapped, solution);
+    consoleWrapper(unwrapped);
     // int newLine=0;
     // char buf[BUFFER];
     // int myWidth = 30;
