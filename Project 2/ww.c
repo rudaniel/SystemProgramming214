@@ -20,6 +20,8 @@ int helper(char line[], int width, int space){
     //char temp[]='\0';
     if(copy[0]=='\0'){       //this is already checked in the for loop lol.
         printf("new line\n");
+        totalWords = -1;
+        return totalWords;
     }
     else{
         for(int i =0; i<BUFFER;i++){
@@ -64,9 +66,9 @@ int helper(char line[], int width, int space){
             totalWords++;
         }
      //   printf("\n");
-        printf("Total Word: %d\n", totalWords);
+     //   printf("Total Word: %d\n", totalWords);
         //printf("charCount: %d\n", charCount);
-        return space; //TODO code proper spacing 
+        return totalWords; //TODO code proper spacing 
 }
 
 int main(){
@@ -94,6 +96,7 @@ int main(){
     while(fgets(buf, BUFFER, unwrapped)){
         buf[strcspn(buf, "\n")] = '\0'; //removes new line character from the end.
         totalWords = helper(buf, myWidth, totalWords); //the helper function will write into the file and return total words.
+        printf("Total Word: %d\n", totalWords);
         word = strtok (buf," ");
         //printf( "Size of word:%ld\n", strlen(word));
         while (word != NULL)
