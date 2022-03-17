@@ -91,7 +91,7 @@ int main(){
 
     int newLine=0;
     char buf[BUFFER];
-    int myWidth = 20;
+    int myWidth = 30;
     int currentWidth = 0;
     int totalWords = 0; //current space at the start
     char *word;
@@ -99,7 +99,7 @@ int main(){
         if(buf[0]=='\n'){
             if(newLine==0){
                 printf("NewLine\n");
-                fprintf(solution, "\n");
+                fprintf(solution, "\n\r");
                 newLine=1;
             }
         }
