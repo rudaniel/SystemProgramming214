@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include <string.h>
+#include <dirent.h>
 
 #define BUFFER 256
 
@@ -168,20 +169,41 @@ int main(int argc, char *argv[]){
     //gcc ww.c -o ww
     //./ww
     int userWidth =  atoi(argv[1]);
- 
+    char *testvar = strdup(argv[2]); //free
+    printf("%s", testvar);
+    struct dirent *dir; //need to close maybe
+    DIR *path = opendir("."); //need to close maybe. this wrong btw need help
+    //path == testvar;
+    if(path == NULL){
+        perror("Directory unable to open.");
+        exit(1);
+    }
+  while((dir=readdir(path))!=NULL){
+      
+       const size_t len = strlen(dir->d_name);
+    if (len > 4                     &&
+        dir->d_name[len - 4] == '.' &&
+        dir->d_name[len - 3] == 't' &&
+        dir->d_name[len - 2] == 'x' &&
+        dir->d_name[len - 1] == 't')
+    {
+        printf ("%s\n", dir->d_name);
+    }
 
-    //printf("UserWidth: %d\n ", userWidth);
+    }
+       
+   
     
 
     FILE *unwrapped = fopen(argv[2], "r");
     if(unwrapped == NULL){
-        printf("File unable to open.");
+        perror("File unable to open.");
         exit(1);
     }
 
     FILE *solution = fopen("solution.txt", "w");
-    if(unwrapped == NULL){
-        printf("File unable to open.");
+    if(solution == NULL){
+        perror("File unable to open.");
         exit(1);
     }
    // fileWrapper(unwrapped, solution, userWidth);
