@@ -72,13 +72,29 @@ int helper(char line[], int width, int space){
         return totalWords; //TODO code proper spacing 
 }
 
-void fileWrapper(FILE *in, FILE *out, int userWidth){
+void fileWrapper(char  *txtFiles[], int userWidth){
     int newLine=0;
     char buf[BUFFER];
-    int myWidth = 30;
+    int myWidth = userWidth;
     int currentWidth = 0;
     int totalWords = 0; //current space at the start
     char *word;
+
+     char *fileName;
+     fileName = strtok (txtFiles,".txt");
+
+        while (fileName != NULL)
+            {
+                char * namer = "wrap";
+                char * txt = ".txt";
+
+                char *temp = strcat(namer ,fileName);
+                char *tempin = strcat(fileName, txt);
+
+                 FILE *out = fopen(temp, "w");
+                 FILE *in = fopen(tempin, "r");
+            
+
     while(fgets(buf, BUFFER, in)){
         if(buf[0]=='\n'){
             if(newLine==0){
@@ -114,6 +130,8 @@ void fileWrapper(FILE *in, FILE *out, int userWidth){
         }
       //  break;
     }
+     fileName = strtok (NULL, " ");
+            }
 }
 
 void consoleWrapper(FILE *in, int userWidth){
@@ -169,50 +187,81 @@ int main(int argc, char *argv[]){
     //gcc ww.c -o ww
     //./ww
     int userWidth =  atoi(argv[1]);
-    char *testvar = strdup(argv[2]); //free
-    printf("%s", testvar);
+    //char *testvar = strdup(argv[2]); //free
+   //printf("%s", testvar);
     struct dirent *dir; //need to close maybe
     DIR *path; //need to close maybe. this wrong btw need help
-    path = opendir(".");
-    //path == testvar;
+    path = opendir(argv[2]);
+    int dirct =0;
+    int file = 0;
+    FILE *unwrapped = fopen(argv[2], "r");
+    
     if(path == NULL){
-        perror("Directory unable to open.");
-        exit(1);
+        dirct = 1;
+       // printf("Dirct: %d\n", dirct);
+       //perror("Directory unable to open.");
+       //exit(1);
     }
-  while((dir=readdir(path))!=NULL){
-      
-       const size_t len = strlen(dir->d_name);
-    if (len > 4                     &&
-        dir->d_name[len - 4] == '.' &&
-        dir->d_name[len - 3] == 't' &&
-        dir->d_name[len - 2] == 'x' &&
-        dir->d_name[len - 1] == 't')
-    {
-        printf ("%s\n", dir->d_name);
-    }
+     //printf("Dirct out if: %d\n", dirct);
+
+     if(dirct == 0){
+         char *txtFiles[256];
+         int index = 0;
+        while((dir=readdir(path))!=NULL){
+            const size_t len = strlen(dir->d_name);
+            if (len > 4                     &&
+                dir->d_name[len - 4] == '.' &&
+                dir->d_name[len - 3] == 't' &&
+                dir->d_name[len - 2] == 'x' &&
+                dir->d_name[len - 1] == 't'){
+
+                txtFiles[index] = dir->d_name;
+                 printf ("%s\n", txtFiles[index]);
+                index ++;
+               // printf ("%s\n", dir->d_name);
+         }
 
     }
+
+    fileWrapper(txtFiles, userWidth);
+
+    }
+
+    
+    if(unwrapped == NULL){
+        file = 1;
+       // printf("File: %d\n", file);
+        // perror("File unable to open.");
+        // exit(1);
+    }
+   //  printf("File out if: %d\n", file);
+
+   
+    if(dirct == 1 && file == 0){
+        consoleWrapper(unwrapped, userWidth);
+    }
+    if(dirct == 1 && file == 1){
+        perror("Not acceptable argument.");
+    }
+
+  
        
    
     
 
-    FILE *unwrapped = fopen(argv[2], "r");
-    if(unwrapped == NULL){
-        perror("File unable to open.");
-        exit(1);
-    }
+   
 
-    FILE *solution = fopen("solution.txt", "w");
-    if(solution == NULL){
-        perror("File unable to open.");
-        exit(1);
-    }
+    // FILE *solution = fopen("solution.txt", "w");
+    // if(solution == NULL){
+    //     perror("File unable to open.");
+    //     exit(1);
+    // }
    // fileWrapper(unwrapped, solution, userWidth);
-    consoleWrapper(unwrapped, userWidth);
+    
     
 
     fclose(unwrapped);
-    fclose(solution);
+    //fclose(solution);
 }
 
 
