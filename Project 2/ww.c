@@ -172,7 +172,8 @@ int main(int argc, char *argv[]){
     char *testvar = strdup(argv[2]); //free
     printf("%s", testvar);
     struct dirent *dir; //need to close maybe
-    DIR *path = opendir("."); //need to close maybe. this wrong btw need help
+    DIR *path; //need to close maybe. this wrong btw need help
+    path = opendir(".");
     //path == testvar;
     if(path == NULL){
         perror("Directory unable to open.");
