@@ -71,7 +71,7 @@ int helper(char line[], int width, int space){
         return totalWords; //TODO code proper spacing 
 }
 
-void fileWrapper(FILE *in, FILE *out){
+void fileWrapper(FILE *in, FILE *out, int userWidth){
     int newLine=0;
     char buf[BUFFER];
     int myWidth = 30;
@@ -115,10 +115,10 @@ void fileWrapper(FILE *in, FILE *out){
     }
 }
 
-void consoleWrapper(FILE *in){
+void consoleWrapper(FILE *in, int userWidth){
     int newLine=0;
     char buf[BUFFER];
-    int myWidth = 30;
+    int myWidth = userWidth;
     int currentWidth = 0;
     int totalWords = 0; //current space at the start
     char *word;
@@ -163,12 +163,17 @@ void consoleWrapper(FILE *in){
     }
 }
 
-int main(){
+int main(int argc, char *argv[]){
 
     //gcc ww.c -o ww
     //./ww
+    int userWidth =  atoi(argv[1]);
+ 
 
-    FILE *unwrapped = fopen("test1.txt", "r");
+    //printf("UserWidth: %d\n ", userWidth);
+    
+
+    FILE *unwrapped = fopen(argv[2], "r");
     if(unwrapped == NULL){
         printf("File unable to open.");
         exit(1);
@@ -179,49 +184,9 @@ int main(){
         printf("File unable to open.");
         exit(1);
     }
-    //fileWrapper(unwrapped, solution);
-    consoleWrapper(unwrapped);
-    // int newLine=0;
-    // char buf[BUFFER];
-    // int myWidth = 30;
-    // int currentWidth = 0;
-    // int totalWords = 0; //current space at the start
-    // char *word;
-    // while(fgets(buf, BUFFER, unwrapped)){
-    //     if(buf[0]=='\n'){
-    //         if(newLine==0){
-    //             printf("NewLine\n");
-    //             fprintf(solution, "\n\r");
-    //             newLine=1;
-    //         }
-    //     }
-    //     else{
-    //         newLine=0;
-    //         buf[strcspn(buf, "\n")] = '\0'; //removes new line character from the end.
-    //         // totalWords = helper(buf, myWidth, totalWords); //the helper function will write into the file and return total words.
-    //         //printf("Total Word: %d\n", totalWords);
-    //         word = strtok (buf," ");
-    //         //printf( "Size of word:%ld\n", strlen(word));
-    //         while (word != NULL)
-    //         {
-    //             printf( "Size of word:%ld\n", strlen(word));
-    //             printf ("%s\n",word);
-    //             currentWidth =  currentWidth + strlen(word)+1;
-
-    //             if(currentWidth <= myWidth){
-    //                 fprintf(solution, "%s ", word);
-    //             }
-    //             else{
-    //                  fprintf(solution, "\n");
-    //                  fprintf(solution, "%s ", word);
-    //                  currentWidth = 0;
-    //                  currentWidth = currentWidth + strlen(word)+1;
-    //             }
-    //             word = strtok (NULL, " ");
-    //         }
-    //     }
-    //   //  break;
-    // }
+   // fileWrapper(unwrapped, solution, userWidth);
+    consoleWrapper(unwrapped, userWidth);
+    
 
     fclose(unwrapped);
     fclose(solution);
@@ -237,14 +202,3 @@ int main(){
 
 
 
-
-     // for(int i =0; i<256;i++){
-        //     if(copy[i] == ' '){
-        //         printf("\n");
-        //     }
-        //     else{
-        //          printf("%c", copy[i]); //This code goes through each line of the file and is able to sperate those lines by words
-        //     }
-           
-        //}
-     //   printf("NEW LINE\n");
