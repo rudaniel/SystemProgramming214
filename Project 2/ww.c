@@ -72,29 +72,13 @@ int helper(char line[], int width, int space){
         return totalWords; //TODO code proper spacing 
 }
 
-void fileWrapper(char  *txtFiles[], int userWidth){
+void fileWrapper(FILE *in, FILE *out, int userWidth){
     int newLine=0;
     char buf[BUFFER];
     int myWidth = userWidth;
     int currentWidth = 0;
     int totalWords = 0; //current space at the start
     char *word;
-
-     char *fileName;
-     fileName = strtok (txtFiles,".txt");
-
-        while (fileName != NULL)
-            {
-                char * namer = "wrap";
-                char * txt = ".txt";
-
-                char *temp = strcat(namer ,fileName);
-                char *tempin = strcat(fileName, txt);
-
-                 FILE *out = fopen(temp, "w");
-                 FILE *in = fopen(tempin, "r");
-            
-
     while(fgets(buf, BUFFER, in)){
         if(buf[0]=='\n'){
             if(newLine==0){
@@ -130,8 +114,8 @@ void fileWrapper(char  *txtFiles[], int userWidth){
         }
       //  break;
     }
-     fileName = strtok (NULL, " ");
-            }
+    // fclose(in);
+    // fclose(out);
 }
 
 void consoleWrapper(FILE *in, int userWidth){
@@ -180,6 +164,7 @@ void consoleWrapper(FILE *in, int userWidth){
         }
       //  break;
     }
+   
 }
 
 int main(int argc, char *argv[]){
@@ -207,6 +192,8 @@ int main(int argc, char *argv[]){
      if(dirct == 0){
          char *txtFiles[256];
          int index = 0;
+         FILE *currentFile;
+         FILE *outFile;
         while((dir=readdir(path))!=NULL){
             const size_t len = strlen(dir->d_name);
             if (len > 4                     &&
@@ -216,14 +203,32 @@ int main(int argc, char *argv[]){
                 dir->d_name[len - 1] == 't'){
 
                 txtFiles[index] = dir->d_name;
-                 printf ("%s\n", txtFiles[index]);
+                currentFile = fopen(txtFiles[index], "r");
+                char *wrap = "wrap";
+
+                char finalName[256];
+                memset(finalName, 0, sizeof(finalName));
+                strcat(finalName,wrap);
+                strcat(finalName,txtFiles[index]);
+
+                outFile = fopen(finalName, "w");
+
+                
+
+                printf ("%s\n", finalName);
+                printf ("%s\n", txtFiles[index]);
+
+                //fileWrapper(currentFile, outFile, userWidth);
+            
                 index ++;
+               // fclose(currentFile);
+               // fclose(outFile);
                // printf ("%s\n", dir->d_name);
          }
 
     }
-
-    fileWrapper(txtFiles, userWidth);
+    
+   
 
     }
 
@@ -238,6 +243,7 @@ int main(int argc, char *argv[]){
 
    
     if(dirct == 1 && file == 0){
+        
         consoleWrapper(unwrapped, userWidth);
     }
     if(dirct == 1 && file == 1){
@@ -261,7 +267,7 @@ int main(int argc, char *argv[]){
     
 
     fclose(unwrapped);
-    //fclose(solution);
+   
 }
 
 
