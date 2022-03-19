@@ -180,14 +180,14 @@ int main(int argc, char *argv[]){
     int dirct =0;
     int file = 0;
     FILE *unwrapped = fopen(argv[2], "r");
-    
+     //closedir(path);
     if(path == NULL){
         dirct = 1;
-       // printf("Dirct: %d\n", dirct);
+       printf("Dirct: %d\n", dirct);
        //perror("Directory unable to open.");
        //exit(1);
     }
-     //printf("Dirct out if: %d\n", dirct);
+    // printf("Dirct out if: %d\n", dirct);
 
      if(dirct == 0){
          char *txtFiles[256];
@@ -203,22 +203,34 @@ int main(int argc, char *argv[]){
                 dir->d_name[len - 1] == 't'){
 
                 txtFiles[index] = dir->d_name;
-                currentFile = fopen(txtFiles[index], "r");
+                char curName[256];
+                memset(curName, 0, sizeof(curName));
+                strcat(curName, argv[2]);
+                strcat(curName, "/");
+                strcat(curName, txtFiles[index]);
+                currentFile = fopen(curName, "r");
+                
                 char *wrap = "wrap";
 
                 char finalName[256];
                 memset(finalName, 0, sizeof(finalName));
+                strcat(finalName, argv[2]);
+                strcat(finalName, "/");
                 strcat(finalName,wrap);
                 strcat(finalName,txtFiles[index]);
+                
 
                 outFile = fopen(finalName, "w");
 
-                
-
                 printf ("%s\n", finalName);
-                printf ("%s\n", txtFiles[index]);
-
-                //fileWrapper(currentFile, outFile, userWidth);
+                if(outFile==NULL){
+                    printf("out file broken\n");
+                }                
+                printf ("%s\n", curName);
+                if(currentFile==NULL){
+                    printf("current file broken\n");
+                }
+                fileWrapper(currentFile, outFile, userWidth);
             
                 index ++;
                // fclose(currentFile);
@@ -263,8 +275,6 @@ int main(int argc, char *argv[]){
     //     exit(1);
     // }
    // fileWrapper(unwrapped, solution, userWidth);
-    
-    
 
     fclose(unwrapped);
    
