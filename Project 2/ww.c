@@ -5,11 +5,6 @@
 
 #define BUFFER 256
 
-typedef struct node{
-    char *word;
-    struct node *next;
-} node;
-
 int helper(char line[], int width, int space){
     char copy[BUFFER];
     strncpy(copy, line, BUFFER);
