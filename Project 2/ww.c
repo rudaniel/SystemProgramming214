@@ -79,57 +79,66 @@ void consoleWrapper(FILE *in, int userWidth){
             }
         }
     }
-   
+   //added to end last line and start new one;
+   printf("\n");
+}
+
+void directoryExplorer(int userWidth, DIR *path, char* directory){
+    struct dirent *dir;
+    char *txtFiles[BUFFER];
+    int index = 0;
+    FILE *currentFile;
+    FILE *outFile;
+    while((dir=readdir(path))!=NULL){
+        const size_t len = strlen(dir->d_name);
+        if (len > 4                     &&
+            dir->d_name[len - 4] == '.' &&
+            dir->d_name[len - 3] == 't' &&
+            dir->d_name[len - 2] == 'x' &&
+            dir->d_name[len - 1] == 't'){
+            txtFiles[index] = dir->d_name;
+            char curName[BUFFER];
+            memset(curName, 0, sizeof(curName));
+            strcat(curName, directory);
+            strcat(curName, "/");
+            strcat(curName, txtFiles[index]);
+            currentFile = fopen(curName, "r");
+            char *wrap = "wrap";
+            char finalName[BUFFER];
+            memset(finalName, 0, sizeof(finalName));
+            strcat(finalName, directory);
+            strcat(finalName, "/");
+            strcat(finalName,wrap);
+            strcat(finalName,txtFiles[index]);
+            outFile = fopen(finalName, "w");
+            fileWrapper(currentFile, outFile, userWidth);
+            index ++;
+        }
+
+    }
+    fclose(currentFile);
+    fclose(outFile);
 }
 
 int main(int argc, char *argv[]){
+    if(argc!=3){
+        printf("Invalid number of argumments\n");
+        return-1;
+    }
     int userWidth =  atoi(argv[1]);
-    struct dirent *dir;
     DIR *path;
     path = opendir(argv[2]);
     FILE *unwrapped = fopen(argv[2], "r");
-    if(path == NULL && unwrapped != NULL){
-        consoleWrapper(unwrapped, userWidth);
-    }
-    else if(path == NULL && unwrapped == NULL){
-        fclose(unwrapped);
+    if(path == NULL && unwrapped == NULL){
         closedir(path);
-        perror("Not acceptable argument.");
+        perror("The Second Console Argument is INVALID Due to: \n  --Invaild Directory \n          OR \n  --File Doesn't Exist \n");
+        return -1;
     }
     else if(path != NULL){
-         char *txtFiles[256];
-         int index = 0;
-         FILE *currentFile;
-         FILE *outFile;
-        while((dir=readdir(path))!=NULL){
-            const size_t len = strlen(dir->d_name);
-            if (len > 4                     &&
-                dir->d_name[len - 4] == '.' &&
-                dir->d_name[len - 3] == 't' &&
-                dir->d_name[len - 2] == 'x' &&
-                dir->d_name[len - 1] == 't'){
-                txtFiles[index] = dir->d_name;
-                char curName[256];
-                memset(curName, 0, sizeof(curName));
-                strcat(curName, argv[2]);
-                strcat(curName, "/");
-                strcat(curName, txtFiles[index]);
-                currentFile = fopen(curName, "r");
-                char *wrap = "wrap";
-                char finalName[256];
-                memset(finalName, 0, sizeof(finalName));
-                strcat(finalName, argv[2]);
-                strcat(finalName, "/");
-                strcat(finalName,wrap);
-                strcat(finalName,txtFiles[index]);
-                outFile = fopen(finalName, "w");
-                fileWrapper(currentFile, outFile, userWidth);
-                index ++;
-            }
-
-        }
-        fclose(currentFile);
-        fclose(outFile);
+        directoryExplorer(userWidth, path, argv[2]);
+    }
+    else if(unwrapped != NULL){
+        consoleWrapper(unwrapped, userWidth);
     }
     fclose(unwrapped);
     closedir(path);
