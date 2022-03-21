@@ -176,15 +176,27 @@ int main(int argc, char *argv[]){
     int file = 0;
     FILE *unwrapped = fopen(argv[2], "r");
      //closedir(path);
-    if(path == NULL){
-        dirct = 1;
-       printf("Dirct: %d\n", dirct);
-       //perror("Directory unable to open.");
-       //exit(1);
-    }
+    // if(path == NULL){
+    //     dirct = 1;
+    //    printf("Dirct: %d\n", dirct);
+    //    //perror("Directory unable to open.");
+    //    //exit(1);
+    // }
     // printf("Dirct out if: %d\n", dirct);
-
-     if(dirct == 0){
+if(unwrapped == NULL){
+        file = 1;
+       // printf("File: %d\n", file);
+        // perror("File unable to open.");
+        // exit(1);
+    }
+   //  printf("File out if: %d\n", file);
+    if(path == NULL && unwrapped != NULL){
+        consoleWrapper(unwrapped, userWidth);
+    }
+    else if(path == NULL && unwrapped == NULL){
+        perror("Not acceptable argument.");
+    }
+    else if(path != NULL){
          char *txtFiles[256];
          int index = 0;
          FILE *currentFile;
@@ -217,14 +229,14 @@ int main(int argc, char *argv[]){
 
                 outFile = fopen(finalName, "w");
 
-                printf ("%s\n", finalName);
-                if(outFile==NULL){
-                    printf("out file broken\n");
-                }                
-                printf ("%s\n", curName);
-                if(currentFile==NULL){
-                    printf("current file broken\n");
-                }
+                //printf ("%s\n", finalName);
+                // if(outFile==NULL){
+                //     printf("out file broken\n");
+                // }                
+                //printf ("%s\n", curName);
+                // if(currentFile==NULL){
+                //     printf("current file broken\n");
+                // }
                 fileWrapper(currentFile, outFile, userWidth);
             
                 index ++;
@@ -234,36 +246,7 @@ int main(int argc, char *argv[]){
          }
 
     }
-    
-   
-
     }
-
-    
-    if(unwrapped == NULL){
-        file = 1;
-       // printf("File: %d\n", file);
-        // perror("File unable to open.");
-        // exit(1);
-    }
-   //  printf("File out if: %d\n", file);
-
-   
-    if(dirct == 1 && file == 0){
-        
-        consoleWrapper(unwrapped, userWidth);
-    }
-    if(dirct == 1 && file == 1){
-        perror("Not acceptable argument.");
-    }
-
-  
-       
-   
-    
-
-   
-
     // FILE *solution = fopen("solution.txt", "w");
     // if(solution == NULL){
     //     perror("File unable to open.");
