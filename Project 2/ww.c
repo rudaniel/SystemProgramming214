@@ -4,6 +4,7 @@
 #include <dirent.h>
 
 #define BUFFER 256
+#define DELIM " \n"
 #define INITIALIZE \
     int newLine=0; \
     char buf[BUFFER];\
@@ -22,7 +23,7 @@ void fileWrapper(FILE *in, FILE *out, int userWidth){
         }
         else{
             newLine=0;
-            word = strtok (buf," \n");
+            word = strtok (buf,DELIM);
             while (word != NULL)
             {
                 int wLength= strlen(word)+1;
@@ -34,7 +35,7 @@ void fileWrapper(FILE *in, FILE *out, int userWidth){
                      fprintf(out, "\n%s ", word);
                      currentWidth = wLength;
                 }
-                word = strtok (NULL, " \n");
+                word = strtok (NULL, DELIM);
             }
         }
     }
@@ -52,7 +53,7 @@ void consoleWrapper(FILE *in, int userWidth){
         }
         else{
             newLine=0;
-            word = strtok (buf," \n");
+            word = strtok (buf,DELIM);
             while (word != NULL){
                 int wLength= strlen(word)+1;
                 if((currentWidth + wLength) <= userWidth || currentWidth==0){
@@ -63,7 +64,7 @@ void consoleWrapper(FILE *in, int userWidth){
                      printf("\n%s ", word);
                      currentWidth =wLength;
                 }
-                word = strtok (NULL, " \n");
+                word = strtok (NULL, DELIM);
             }
         }
     }
