@@ -50,37 +50,53 @@ void consoleWrapper(FILE *in, int userWidth){
     char *word;
     while(fgets(buf, BUFFER, in)){
         if(buf[0]=='\n'){
-            if(newLine==0){
+            currentWidth = 0;
+            /*if(newLine==0){
                 printf("\n");
-                newLine=1;
             }
-            else{
+            else if(newLine==1){
                 printf("\n\n");
+            }*/
+            //newLine=2;
+            if(newLine==0){
+                printf("\n\n");
+                newLine=1;
             }
         }
         else{
             newLine=0;
-            buf[strcspn(buf, "\n")] = '\0';
-            word = strtok (buf," ");
+            //buf[strcspn(buf, "\n")] = '\0';
+            word = strtok (buf," \n");
             while (word != NULL)
             {
-                currentWidth =  currentWidth + strlen(word)+1;
-                if(currentWidth <= myWidth){
+                int wLength= strlen(word)+1;
+                //printf(" CW: %d ",currentWidth);
+                //printf(" WL: %d ",wLength);
+                //currentWidth =  currentWidth + wLength;
+                if((currentWidth + wLength) <= myWidth || currentWidth==0){
                     printf("%s ", word);
+                    currentWidth =  currentWidth + wLength;
+                    //printf(" FIRST ");
                 }
+                // else if(wLength > myWidth){
+                //     printf(" MIDDLE ");
+                //     printf("%s\n", word);
+                //     currentWidth= currentWidth + wLength;
+                //     newLine=3;
+                // }
                 else{
-                     printf("\n");
-                     newLine=1;
-                     printf("%s ", word);
-                     currentWidth = 0;
-                     currentWidth = currentWidth + strlen(word)+1;
+                     //newLine=1;
+                     printf("\n%s ", word);
+                     currentWidth =wLength;
+                     //printf(" LAST ");
                 }
-                word = strtok (NULL, " ");
+                //printf(" CL: %d ",wLength);
+                word = strtok (NULL, " \n");
             }
         }
     }
    //added to end last line and start new one;
-   printf("\n");
+        printf("\n");
 }
 
 void directoryExplorer(int userWidth, DIR *path, char* directory){
