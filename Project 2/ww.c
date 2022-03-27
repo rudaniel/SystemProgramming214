@@ -4,13 +4,15 @@
 #include <dirent.h>
 
 #define BUFFER 256
+#define INITIALIZE \
+    int newLine=0; \
+    char buf[BUFFER];\
+    int currentWidth = 0; \
+    int totalWords = 0; \
+    char *word; \
 
 void fileWrapper(FILE *in, FILE *out, int userWidth){
-    int newLine=0;
-    char buf[BUFFER];
-    int currentWidth = 0;
-    int totalWords = 0;
-    char *word;
+    INITIALIZE;
     while(fgets(buf, BUFFER, in)){
         if(buf[0]=='\n'){
             if(newLine==0){
@@ -39,11 +41,7 @@ void fileWrapper(FILE *in, FILE *out, int userWidth){
 }
 
 void consoleWrapper(FILE *in, int userWidth){
-    int newLine=0;
-    char buf[BUFFER];
-    int currentWidth = 0;
-    int totalWords = 0;
-    char *word;
+    INITIALIZE;
     while(fgets(buf, BUFFER, in)){
         if(buf[0]=='\n'){
             currentWidth = 0;
