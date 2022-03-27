@@ -8,34 +8,31 @@
 void fileWrapper(FILE *in, FILE *out, int userWidth){
     int newLine=0;
     char buf[BUFFER];
-    int myWidth = userWidth;
     int currentWidth = 0;
     int totalWords = 0;
     char *word;
     while(fgets(buf, BUFFER, in)){
         if(buf[0]=='\n'){
             if(newLine==0){
-                fprintf(out, "\n\r");
+                fprintf(out, "\r\n");
                 newLine=1;
             }
         }
         else{
             newLine=0;
-            buf[strcspn(buf, "\n")] = '\0';
-            word = strtok (buf," ");
+            word = strtok (buf," \n");
             while (word != NULL)
             {
-                currentWidth =  currentWidth + strlen(word)+1;
-                if(currentWidth <= myWidth){
+                int wLength= strlen(word)+1;
+                if((currentWidth + wLength) <= userWidth || currentWidth==0){
                     fprintf(out, "%s ", word);
+                    currentWidth =  currentWidth + wLength;
                 }
                 else{
-                     fprintf(out, "\n");
-                     fprintf(out, "%s ", word);
-                     currentWidth = 0;
-                     currentWidth = currentWidth + strlen(word)+1;
+                     fprintf(out, "\n%s ", word);
+                     currentWidth = wLength;
                 }
-                word = strtok (NULL, " ");
+                word = strtok (NULL, " \n");
             }
         }
     }
@@ -44,20 +41,12 @@ void fileWrapper(FILE *in, FILE *out, int userWidth){
 void consoleWrapper(FILE *in, int userWidth){
     int newLine=0;
     char buf[BUFFER];
-    int myWidth = userWidth;
     int currentWidth = 0;
     int totalWords = 0;
     char *word;
     while(fgets(buf, BUFFER, in)){
         if(buf[0]=='\n'){
             currentWidth = 0;
-            /*if(newLine==0){
-                printf("\n");
-            }
-            else if(newLine==1){
-                printf("\n\n");
-            }*/
-            //newLine=2;
             if(newLine==0){
                 printf("\n\n");
                 newLine=1;
@@ -65,38 +54,23 @@ void consoleWrapper(FILE *in, int userWidth){
         }
         else{
             newLine=0;
-            //buf[strcspn(buf, "\n")] = '\0';
             word = strtok (buf," \n");
-            while (word != NULL)
-            {
+            while (word != NULL){
                 int wLength= strlen(word)+1;
-                //printf(" CW: %d ",currentWidth);
-                //printf(" WL: %d ",wLength);
-                //currentWidth =  currentWidth + wLength;
-                if((currentWidth + wLength) <= myWidth || currentWidth==0){
+                if((currentWidth + wLength) <= userWidth || currentWidth==0){
                     printf("%s ", word);
                     currentWidth =  currentWidth + wLength;
-                    //printf(" FIRST ");
                 }
-                // else if(wLength > myWidth){
-                //     printf(" MIDDLE ");
-                //     printf("%s\n", word);
-                //     currentWidth= currentWidth + wLength;
-                //     newLine=3;
-                // }
                 else{
-                     //newLine=1;
                      printf("\n%s ", word);
                      currentWidth =wLength;
-                     //printf(" LAST ");
                 }
-                //printf(" CL: %d ",wLength);
                 word = strtok (NULL, " \n");
             }
         }
     }
    //added to end last line and start new one;
-        printf("\n");
+    printf("\n");
 }
 
 void directoryExplorer(int userWidth, DIR *path, char* directory){
