@@ -116,7 +116,8 @@ void consoleWrapper(FILE *in, int userWidth){
     cur[0] = fgetc(in);
     if(cur[0]==EOF)
         return;
-    char* temp=(char*)malloc(sizeof(char)), word=(char*)malloc(sizeof(char));
+    char* temp=(char*)malloc(sizeof(char));
+    char* word=(char*)malloc(sizeof(char));
     int newLine= 0, currentWidth = 0, totalWords = 0, wLength = 1, space = 0;
     while(cur[0]!=EOF){
         if(cur[0]=='\n'){
