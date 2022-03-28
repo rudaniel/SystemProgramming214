@@ -2,6 +2,8 @@
 #include<stdlib.h>
 #include <string.h>
 #include <dirent.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #define BUFFER 256
 #define DELIM " \n"
@@ -111,15 +113,15 @@ void directoryExplorer(int userWidth, DIR *path, char* directory){
     printf("\n");
 }*/
 
-void consoleWrapper(FILE *in, int userWidth){
+void consoleWrapper(int in, int userWidth){
     char cur[2] = "\0";
-    cur[0] = fgetc(in);
+    int r = (char)read(in,cur,1);
     if(cur[0]==EOF)
         return;
     char* temp=(char*)malloc(sizeof(char));
     char* word=(char*)malloc(sizeof(char));
     int newLine= 0, currentWidth = 0, totalWords = 0, wLength = 1, space = 0;
-    while(cur[0]!=EOF){
+    while(r!=0){
         if(cur[0]=='\n'){
             if(newLine==0){
                 int sum = (currentWidth) + wLength;
@@ -175,7 +177,7 @@ void consoleWrapper(FILE *in, int userWidth){
             strcpy(word,temp);
             free(temp);
         }
-        cur[0]= fgetc(in);
+        r= (char)read(in,cur,1);;
     }
     int sum = (currentWidth) + wLength;
     if(sum <= userWidth || currentWidth==0){
@@ -196,8 +198,10 @@ int main(int argc, char *argv[]){
     int userWidth =  atoi(argv[1]);
     DIR *path;
     path = opendir(argv[2]);
-    FILE *unwrapped = fopen(argv[2], "r");
-    if(path == NULL && unwrapped == NULL){
+    int rd = open(argv[2],O_RDONLY);
+
+    //FILE *unwrapped = fopen(argv[2], "r");
+    if(path == NULL && rd == -1){
         closedir(path);
         perror("The Second Console Argument is INVALID Due to: \n  --Invaild Directory \n          OR \n  --File Doesn't Exist \n");
         return -1;
@@ -205,9 +209,9 @@ int main(int argc, char *argv[]){
     else if(path != NULL){
         directoryExplorer(userWidth, path, argv[2]);
     }
-    else if(unwrapped != NULL){
-        consoleWrapper(unwrapped, userWidth);
+    else if(rd != -1){
+        consoleWrapper(rd, userWidth);
     }
-    fclose(unwrapped);
+    close(rd);
     closedir(path);
 }
