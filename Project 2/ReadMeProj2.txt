@@ -1,5 +1,5 @@
 Name: Daniel Lopez NetID: ddl59
-Name: Manav Bali NetId: IhaveAsmallDick
+Name: Manav Bali NetId: mb1841
 
 For our testing strategy, we used a wide range of misaligned files in an attempt
 to break our code in any way possible. We started testing files and directories 

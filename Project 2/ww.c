@@ -63,7 +63,7 @@ void directoryExplorer(int userWidth, DIR *path, char* directory){
             strcat(curName, "/");
             strcat(curName, txtFiles[index]);
             currentFile = fopen(curName, "r");
-            char *wrap = "wrap";
+            char *wrap = "wrap.";
             char finalName[BUFFER];
             memset(finalName, 0, sizeof(finalName));
             strcat(finalName, directory);
@@ -80,7 +80,7 @@ void directoryExplorer(int userWidth, DIR *path, char* directory){
     fclose(outFile);
 }
 
-void consoleWrapper(FILE *in, int userWidth){
+/*void consoleWrapper(FILE *in, int userWidth){
     INITIALIZE;
     while(fgets(buf, BUFFER, in)){
         if(buf[0]=='\n'){
@@ -108,6 +108,122 @@ void consoleWrapper(FILE *in, int userWidth){
         }
     }
    //added to end last line and start new one;
+    printf("\n");
+}*/
+
+void consoleWrapper(FILE *in, int userWidth){
+    //printf("t1\n");
+    int newLine=0;
+    char cur[2] = "\0";
+    cur[0] = fgetc(in);
+    if(cur[0]==EOF){
+        return;
+    }
+    char* temp=(char*)malloc(sizeof(char));
+    int currentWidth = 0;
+    int totalWords = 0;
+    int wLength = 1;
+    int space = 0;
+    char* word=(char*)malloc(sizeof(char)); 
+    //printf("t2\n");
+    while(cur[0]!=EOF){
+        //printf("t3\n");
+        if(cur[0]=='\n'){
+            //printf("t1\n");
+            if(newLine==0){
+                int sum = (currentWidth) + wLength;
+                if(sum <= userWidth || currentWidth==0){
+                    //printf("t1.1.1\n");
+                    printf("%s", word);
+                    currentWidth = sum;
+                    printf(" ");
+                    currentWidth ++;
+                    //newLine++;
+                }
+                else{
+                    //printf("t1.1.2\n");
+                    printf("\n%s ", word);
+                    currentWidth =wLength+1;
+                    //space=0;
+                }
+            }
+            else if(newLine==1){
+                currentWidth = 0;
+                space = 0;
+                //printf("t1.2\n");
+                printf("\n\n");
+                //newLine=1;
+            }
+            newLine++;
+            wLength=0;
+            //printf("t4\n");
+            free(word);
+            word= (char*)malloc(sizeof(char));
+            strcpy(word, "");
+        }
+        else if(cur[0]==' '){
+            //printf("t2\n");
+            if(space == 0){
+                //printf("t2.1\n");
+                int sum = (currentWidth) + wLength;
+                if(sum <= userWidth || currentWidth==0){
+                    //printf("t2.1.1\n");
+                    printf("%s", word);
+                    currentWidth = sum;
+                    printf(" ");
+                    currentWidth ++;
+                    space++;
+                }
+                else{
+                    //printf("t2.1.2\n");
+                    printf("\n%s ", word);
+                    currentWidth =wLength+1;
+                    space=0;
+                }
+                
+            }
+            free(word);
+            word= (char*)malloc(sizeof(char));
+            strcpy(word, "");
+            newLine = 0;
+            wLength=0;
+        }
+        else{
+            //printf("t3\n");
+            newLine = 0;
+            space = 0;
+            //word = strtok (buf,DELIM);
+            //printf("t7: %s\n",word);
+           // printf("t8: %s\n",cur);
+            wLength++;
+            temp= (char*)malloc(wLength*sizeof(char));
+            strcpy(temp,word);
+            strcat(temp, cur);
+            //printf("t9: %s %d\n",temp,wLength);
+            free(word);
+            word= (char*)malloc(wLength*sizeof(char));
+            strcpy(word,temp);
+            free(temp);
+            //word = strtok (NULL, DELIM);
+        }
+        cur[0]= fgetc(in);
+    }
+   //added to end last line and start new one;
+   int sum = (currentWidth) + wLength;
+                if(sum <= userWidth || currentWidth==0){
+                    //printf("t1.1.1\n");
+                    printf("%s", word);
+                    currentWidth = sum;
+                    printf(" ");
+                    currentWidth ++;
+                    //newLine++;
+                }
+                else{
+                    //printf("t1.1.2\n");
+                    printf("\n%s ", word);
+                    currentWidth =wLength;
+                    //space=0;
+                }
     printf("\n");
 }
 
