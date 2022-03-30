@@ -4,6 +4,7 @@
 #include <dirent.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #define BUFFER 256
 #define DELIM " \n"
@@ -241,18 +242,20 @@ int main(int argc, char *argv[]){
     DIR *path;
     path = opendir(argv[2]);
     int rd = open(argv[2],O_RDONLY);
+    struct stat dirFile;
+    int status = stat (argv[2], &dirFile);
 
     //FILE *unwrapped = fopen(argv[2], "r");
-    if(path == NULL && rd == -1){
+    if(status != 0){
         closedir(path);
         perror("The Second Console Argument is INVALID Due to: \n  --Invaild Directory \n          OR \n  --File Doesn't Exist \n");
         return -1;
     }
-    else if(path != NULL){
-        directoryExplorer(userWidth, path, argv[2]);
-    }
-    else if(rd != -1){
+    else if(S_ISREG(dirFile.st_mode)){
         wrapper(rd, -1,userWidth);
+    }
+    else if(S_ISDIR(dirFile.st_mode)){
+        directoryExplorer(userWidth, path, argv[2]);
     }
     close(rd);
     closedir(path);
