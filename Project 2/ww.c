@@ -173,11 +173,19 @@ void directoryExplorer(int userWidth, DIR *path, char* directory){
     int outFile;
     while((dir=readdir(path))!=NULL){
         const size_t len = strlen(dir->d_name);
+        //printf("%d\n", len);
+        if( dir->d_name[0] == 'w' &&
+            dir->d_name[1] == 'r' &&
+            dir->d_name[2] == 'a' &&
+            dir->d_name[3] == 'p' &&
+            dir->d_name[4] == '.' ){
+                break;
+            }
         if (len > 4                     &&
             dir->d_name[len - 4] == '.' &&
             dir->d_name[len - 3] == 't' &&
             dir->d_name[len - 2] == 'x' &&
-            dir->d_name[len - 1] == 't'){
+            dir->d_name[len - 1] == 't' ){
             txtFiles[index] = dir->d_name;
             char curName[BUFFER];
             memset(curName, 0, sizeof(curName));
