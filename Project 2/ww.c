@@ -174,14 +174,17 @@ void directoryExplorer(int userWidth, DIR *path, char* directory){
     while((dir=readdir(path))!=NULL){
         const size_t len = strlen(dir->d_name);
         //printf("%d\n", len);
-        if( dir->d_name[0] == 'w' &&
+        if( dir->d_name[0] == '.'){
+            break;
+        }
+        else if( dir->d_name[0] == 'w' &&
             dir->d_name[1] == 'r' &&
             dir->d_name[2] == 'a' &&
             dir->d_name[3] == 'p' &&
             dir->d_name[4] == '.' ){
                 break;
             }
-        if (len > 4                     &&
+        else if (len > 4                     &&
             dir->d_name[len - 4] == '.' &&
             dir->d_name[len - 3] == 't' &&
             dir->d_name[len - 2] == 'x' &&
@@ -242,29 +245,34 @@ void directoryExplorer(int userWidth, DIR *path, char* directory){
 }*/
 
 int main(int argc, char *argv[]){
-    if(argc!=3){
+    if(argc<1){
         printf("Invalid number of argumments\n");
         return-1;
     }
-    int userWidth =  atoi(argv[1]);
-    DIR *path;
-    path = opendir(argv[2]);
-    int rd = open(argv[2],O_RDONLY);
-    struct stat dirFile;
-    int status = stat (argv[2], &dirFile);
+    else if(argc==2){
+        wrapper(0, -1, atoi(argv[1]));
+    }
+    else {
+        int userWidth =  atoi(argv[1]);
+        DIR *path;
+        path = opendir(argv[2]);
+        int rd = open(argv[2],O_RDONLY);
+        struct stat dirFile;
+        int status = stat (argv[2], &dirFile);
 
-    //FILE *unwrapped = fopen(argv[2], "r");
-    if(status != 0){
+        //FILE *unwrapped = fopen(argv[2], "r");
+        if(status != 0){
+            closedir(path);
+            perror("The Second Console Argument is INVALID Due to: \n  --Invaild Directory \n          OR \n  --File Doesn't Exist \n");
+            return -1;
+        }
+        else if(S_ISREG(dirFile.st_mode)){
+            wrapper(rd, -1,userWidth);
+        }
+        else if(S_ISDIR(dirFile.st_mode)){
+            directoryExplorer(userWidth, path, argv[2]);
+        }
+        close(rd);
         closedir(path);
-        perror("The Second Console Argument is INVALID Due to: \n  --Invaild Directory \n          OR \n  --File Doesn't Exist \n");
-        return -1;
     }
-    else if(S_ISREG(dirFile.st_mode)){
-        wrapper(rd, -1,userWidth);
-    }
-    else if(S_ISDIR(dirFile.st_mode)){
-        directoryExplorer(userWidth, path, argv[2]);
-    }
-    close(rd);
-    closedir(path);
 }
