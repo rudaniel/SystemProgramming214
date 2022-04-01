@@ -47,6 +47,7 @@ void wrapper(int in, int out,int userWidth){
                     temp= (char*)malloc(totalWidth*sizeof(char));
                     strcpy(temp,text);
                     strcat(temp, "\n");
+                    new = 1;
                     strcat(temp, word);
                     free(text);
                     text= (char*)malloc(totalWidth*sizeof(char));
@@ -101,8 +102,10 @@ void wrapper(int in, int out,int userWidth){
                 else{
                     totalWidth++;
                     temp= (char*)malloc(totalWidth*sizeof(char));
+                    new = 1;
                     strcpy(temp,text);
                     strcat(temp, "\n");
+                    new = 1;
                     strcat(temp, word);
                     free(text);
                     text= (char*)malloc(totalWidth*sizeof(char));
@@ -149,6 +152,7 @@ void wrapper(int in, int out,int userWidth){
         temp= (char*)malloc((totalWidth*2)*sizeof(char));
         strcpy(temp,text);
         strcat(temp, "\n");
+        new = 1;
         strcat(temp, word);
         free(text);
         text= (char*)malloc((totalWidth*2)*sizeof(char));
