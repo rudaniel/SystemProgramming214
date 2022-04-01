@@ -17,7 +17,7 @@ void wrapper(int in, int out,int userWidth){
     strcpy(word, "\0");
     char* text=(char*)malloc(sizeof(char));
     strcpy(text, "\0");
-    int newLine= 0, currentWidth = 0, totalWords = 0, wLength = 1, space = 0, totalWidth = 0, error = 0, new = 0;
+    int newLine= 0, currentWidth = 0, wLength = 1, space = 0, totalWidth = 0, error = 0, new = 0;
     while(read(in,cur,1)>0){
         if(cur[0]=='\n'){
             if(newLine==0){
