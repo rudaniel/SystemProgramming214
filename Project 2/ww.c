@@ -50,79 +50,139 @@ void wrapper(int in, int out,int userWidth){
     if(in==-1&&out==-1)
         return;
     char cur[2] = "\0";
-    int r = (char)read(in,cur,1);
     char* temp=(char*)malloc(sizeof(char));
     char* word=(char*)malloc(sizeof(char));
-    int newLine= 0, currentWidth = 0, totalWords = 0, wLength = 1, space = 0;
-    while(r!=0){
+    char* text=(char*)malloc(sizeof(char));
+    int newLine= 0, currentWidth = 0, totalWords = 0, wLength = 1, space = 0, totalWidth = 0, error = 0;
+    while(read(in,cur,1)>0){
         if(cur[0]=='\n'){
             if(newLine==0){
+                totalWidth++;
+                if(wLength>userWidth){
+                    error=1;
+                }
                 int sum = (currentWidth) + wLength;
                 if(sum <= userWidth || currentWidth==0){
-                    if(out==-1){
+                    /*if(out==-1){
                         printf("%s ", word);
                     }
                     else{
                         write(out, word, wLength);
                         write(out, " ", strlen(" "));
-                    }
+                    }*/
                     currentWidth = sum+1;
+                    temp= (char*)malloc(totalWidth*sizeof(char));
+                    strcpy(temp,text);
+                    strcat(temp, word);
+                    strcat(temp, " ");
+                    //1 %s\n",text);
+                    free(text);
+                    text= (char*)malloc(totalWidth*sizeof(char));
+                    strcpy(text,temp);
+                    //2\n");
+                    free(temp);
                 }
                 else{
-                    if(out==-1){
+                   /* if(out==-1){
                         printf("\n%s ", word);
                     }
                     else{
                         write(out, "\n", strlen("\n"));
                         write(out, word, strlen(word));
                         write(out, " ", strlen(" "));
-                    }
+                    }*/
                     currentWidth =wLength+1;
+                    totalWidth++;
+                    temp= (char*)malloc(totalWidth*sizeof(char));
+                    strcpy(temp,text);
+                    strcat(temp, "\n");
+                    strcat(temp, word);
+                    strcat(temp, " ");
+                    //3\n");
+                    free(text);
+                    text= (char*)malloc(totalWidth*sizeof(char));
+                    strcpy(text,temp);
+                    //4\n");
+                    free(temp);
                 }
             }
             else if(newLine==1){
+                totalWidth++;
+                //totalWidth = totalWidth+currentWidth;
                 currentWidth = 0;
                 space = 0;
-                if(out==-1){
-                    printf("\n\n");
-                }
-                else{
-                    write(out, "\r\n", strlen("\r\n"));
-                }
+                totalWidth++;
+                temp= (char*)malloc(totalWidth*sizeof(char));
+                strcpy(temp,text);
+                strcat(temp, "\n\n");
+                //5\n");
+                free(text);
+                text= (char*)malloc(totalWidth*sizeof(char));
+                strcpy(text,temp);
+                //6\n");
+                free(temp);
             }
             newLine++;
             wLength=0;
+            //7\n");
             free(word);
             word= (char*)malloc(sizeof(char));
             strcpy(word, "");
         }
         else if(cur[0]==' '){
             if(space == 0){
+                if(wLength>userWidth){
+                    error=1;
+                }
+                totalWidth++;
                 int sum = (currentWidth) + wLength;
                 if(sum <= userWidth || currentWidth==0){
-                    if(out==-1){
+                    /*if(out==-1){
                         printf("%s ", word);
                     }
                     else{
                         write(out, word, strlen(word));
                         write(out, " ", strlen(" "));
-                    }
+                    }*/
+                    temp= (char*)malloc(totalWidth*sizeof(char));
+                    strcpy(temp,text);
+                    strcat(temp, word);
+                    strcat(temp, " ");
+                    //8\n");
+                    free(text);
+                    text= (char*)malloc(totalWidth*sizeof(char));
+                    strcpy(text,temp);
+                    //9\n");
+                    free(temp);
                     currentWidth = sum+1;
                     space++;
                 }
                 else{
-                    if(out==-1){
+                    /*if(out==-1){
                         printf("\n%s ", word);
                     }
                     else{
                         write(out, "\n", strlen("\n"));
                         write(out, word, strlen(word));
                         write(out, " ", strlen(" "));
-                    }
+                    }*/
+                    totalWidth+=2;
+                    temp= (char*)malloc(totalWidth*sizeof(char));
+                    strcpy(temp,text);
+                    strcat(temp, "\n");
+                    strcat(temp, word);
+                    strcat(temp, " ");
+                    //10\n");
+                    free(text);
+                    text= (char*)malloc(totalWidth*sizeof(char));
+                    strcpy(text,temp);
+                    //11\n");
+                    free(temp);
                     currentWidth =wLength+1;
                     space=0;
                 }
             }
+            //12\n");
             free(word);
             word= (char*)malloc(sizeof(char));
             strcpy(word, "");
@@ -133,36 +193,79 @@ void wrapper(int in, int out,int userWidth){
             newLine = 0;
             space = 0;
             wLength++;
+            totalWidth++;
             temp= (char*)malloc(wLength*sizeof(char));
             strcpy(temp,word);
             strcat(temp, cur);
+            //13\n");
             free(word);
             word= (char*)malloc(wLength*sizeof(char));
             strcpy(word,temp);
+            //14\n");
             free(temp);
         }
-        r= (char)read(in,cur,1);;
     }
     int sum = (currentWidth) + wLength;
+    //totalWidth+=sum;
+    if(wLength>userWidth){
+        error=1;
+    }
     if(sum <= userWidth || currentWidth==0){
-        if(out==-1){
-            printf("%s ", word);
+        /*if(out==-1){
+            printf("%s", word);
         }
         else{
             write(out, word, strlen(word));
-            write(out, " ", strlen(" "));
-        }
+            //write(out, " ", strlen(" "));
+        }*/
+        temp= (char*)malloc(totalWidth*sizeof(char));
+        strcpy(temp,text);
+        strcat(temp, word);
+        //strcat(temp, " ");
+        //15\n");
+        free(text);
+        text= (char*)malloc(totalWidth*sizeof(char));
+        strcpy(text,temp);
+        //16\n");
+        free(temp);
+        //totalWidth++;
     }
     else{
-        if(out==-1){
-            printf("\n%s ", word);
+        /*if(out==-1){
+            printf("\n%s", word);
         }
         else{
             write(out, "\n", strlen("\n"));
             write(out, word, strlen(word));
-            write(out, " ", strlen(" "));
-        }
+            //write(out, " ", strlen(" "));
+        }*/
+        totalWidth++;
+        temp= (char*)malloc(totalWidth*sizeof(char));
+        strcpy(temp,text);
+        strcat(temp, "\n");
+        strcat(temp, word);
+        //17\n");
+        free(text);
+        text= (char*)malloc(totalWidth*sizeof(char));
+        strcpy(text,temp);
+        //18\n");
+        free(temp);
     }
+    if(out==-1){
+        printf("%s\n", text);
+    }
+    else{
+        write(out, text, strlen(text));
+        //write(out, word, strlen(word));
+        //write(out, " ", strlen(" "));
+    }
+    if(error==1){
+        printf("error: word length exceeded user wrap\n");
+        close(in);
+        close(out);
+        exit(EXIT_FAILURE);
+    }
+    //printf("\ntotalWidth: %d\n",totalWidth-2);
 }
 
 void directoryExplorer(int userWidth, DIR *path, char* directory){
@@ -173,16 +276,19 @@ void directoryExplorer(int userWidth, DIR *path, char* directory){
     int outFile;
     while((dir=readdir(path))!=NULL){
         const size_t len = strlen(dir->d_name);
-        //printf("%d\n", len);
+        //printf("cccc\n");
+        //printf("%s\n", dir->d_name);
         if( dir->d_name[0] == '.'){
-            break;
+            //printf("broken 1\n");
+           // break;
         }
         else if( dir->d_name[0] == 'w' &&
             dir->d_name[1] == 'r' &&
             dir->d_name[2] == 'a' &&
             dir->d_name[3] == 'p' &&
             dir->d_name[4] == '.' ){
-                break;
+                //printf("broken 2\n");
+                //break;
             }
         else if (len > 4                     &&
             dir->d_name[len - 4] == '.' &&
@@ -203,7 +309,8 @@ void directoryExplorer(int userWidth, DIR *path, char* directory){
             strcat(finalName, "/");
             strcat(finalName,wrap);
             strcat(finalName,txtFiles[index]);
-            outFile = open(finalName,O_WRONLY|O_CREAT|O_TRUNC,S_IRUSR);
+            outFile = open(finalName,O_WRONLY|O_CREAT|O_TRUNC,S_IRWXU|S_IRWXG|S_IRWXO);
+           // printf("outfile %d\n",outFile);
             wrapper(currentFile, outFile, userWidth);
             index ++;
             close(currentFile);
@@ -250,6 +357,7 @@ int main(int argc, char *argv[]){
         return-1;
     }
     else if(argc==2){
+        printf("Enter text now:(Press ctrl d to run word wrapper)\n");
         wrapper(0, -1, atoi(argv[1]));
     }
     else {
@@ -262,9 +370,10 @@ int main(int argc, char *argv[]){
 
         //FILE *unwrapped = fopen(argv[2], "r");
         if(status != 0){
+            close(rd);
             closedir(path);
             perror("The Second Console Argument is INVALID Due to: \n  --Invaild Directory \n          OR \n  --File Doesn't Exist \n");
-            return -1;
+            exit(EXIT_FAILURE);
         }
         else if(S_ISREG(dirFile.st_mode)){
             wrapper(rd, -1,userWidth);
