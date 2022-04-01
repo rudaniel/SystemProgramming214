@@ -50,9 +50,12 @@ void wrapper(int in, int out,int userWidth){
     if(in==-1&&out==-1)
         return;
     char cur[2] = "\0";
-    char* temp=(char*)malloc(sizeof(char));
+    char* temp;//=(char*)malloc(sizeof(char));
+    //strcpy(temp, "\0");
     char* word=(char*)malloc(sizeof(char));
+    strcpy(word, "\0");
     char* text=(char*)malloc(sizeof(char));
+    strcpy(text, "\0");
     int newLine= 0, currentWidth = 0, totalWords = 0, wLength = 1, space = 0, totalWidth = 0, error = 0;
     while(read(in,cur,1)>0){
         if(cur[0]=='\n'){
@@ -122,12 +125,13 @@ void wrapper(int in, int out,int userWidth){
                 //6\n");
                 free(temp);
             }
+            //free(temp);
             newLine++;
             wLength=0;
             //7\n");
             free(word);
             word= (char*)malloc(sizeof(char));
-            strcpy(word, "");
+            strcpy(word, "\0");
         }
         else if(cur[0]==' '){
             if(space == 0){
@@ -144,13 +148,13 @@ void wrapper(int in, int out,int userWidth){
                         write(out, word, strlen(word));
                         write(out, " ", strlen(" "));
                     }*/
-                    temp= (char*)malloc(totalWidth*sizeof(char));
+                    temp= (char*)malloc((totalWidth*2)*sizeof(char));
                     strcpy(temp,text);
                     strcat(temp, word);
                     strcat(temp, " ");
                     //8\n");
                     free(text);
-                    text= (char*)malloc(totalWidth*sizeof(char));
+                    text= (char*)malloc((totalWidth*2)*sizeof(char));
                     strcpy(text,temp);
                     //9\n");
                     free(temp);
@@ -185,7 +189,7 @@ void wrapper(int in, int out,int userWidth){
             //12\n");
             free(word);
             word= (char*)malloc(sizeof(char));
-            strcpy(word, "");
+            strcpy(word, "\0");
             newLine = 0;
             wLength=0;
         }
@@ -194,16 +198,17 @@ void wrapper(int in, int out,int userWidth){
             space = 0;
             wLength++;
             totalWidth++;
-            temp= (char*)malloc(wLength*sizeof(char));
+            temp= (char*)malloc((wLength*2)*sizeof(char));
             strcpy(temp,word);
             strcat(temp, cur);
             //13\n");
             free(word);
-            word= (char*)malloc(wLength*sizeof(char));
+            word= (char*)malloc((wLength*2)*sizeof(char));
             strcpy(word,temp);
             //14\n");
             free(temp);
         }
+        //free(temp);
     }
     int sum = (currentWidth) + wLength;
     //totalWidth+=sum;
@@ -218,16 +223,16 @@ void wrapper(int in, int out,int userWidth){
             write(out, word, strlen(word));
             //write(out, " ", strlen(" "));
         }*/
-        temp= (char*)malloc(totalWidth*sizeof(char));
+        temp= (char*)malloc((totalWidth*2)*sizeof(char));
         strcpy(temp,text);
         strcat(temp, word);
         //strcat(temp, " ");
         //15\n");
         free(text);
-        text= (char*)malloc(totalWidth*sizeof(char));
+        text= (char*)malloc((totalWidth*2)*sizeof(char));
         strcpy(text,temp);
         //16\n");
-        free(temp);
+        //free(temp);
         //totalWidth++;
     }
     else{
@@ -240,25 +245,28 @@ void wrapper(int in, int out,int userWidth){
             //write(out, " ", strlen(" "));
         }*/
         totalWidth++;
-        temp= (char*)malloc(totalWidth*sizeof(char));
+        temp= (char*)malloc((totalWidth*2)*sizeof(char));
         strcpy(temp,text);
         strcat(temp, "\n");
         strcat(temp, word);
         //17\n");
         free(text);
-        text= (char*)malloc(totalWidth*sizeof(char));
+        text= (char*)malloc((totalWidth*2)*sizeof(char));
         strcpy(text,temp);
         //18\n");
-        free(temp);
+        //free(temp);
     }
     if(out==-1){
         printf("%s\n", text);
     }
     else{
-        write(out, text, strlen(text));
+        int o=write(out, text, strlen(text));
         //write(out, word, strlen(word));
         //write(out, " ", strlen(" "));
     }
+    free(text);
+    free(word);
+    free(temp);
     if(error==1){
         printf("error: word length exceeded user wrap\n");
         close(in);
