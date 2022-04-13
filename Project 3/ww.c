@@ -12,19 +12,58 @@
 /*File queue*/
 typedef struct file{
     char* in;
-    char*out;
-    file *prev;     
+    char*out;    
     file *next;
 } file;
 
-typedef struct fQueue {
-    file *front;
-    file *end;
-    int size;
+typedef struct fStack {
+    file *head;
     pthread_mutex_t lock;
-    pthread_cond_t enqueue_ready, dequeue_ready;
-} fQueue;
+} fStack;
+/*
+*/
+void push(struct Node** head_ref, int new_data)
+{
+    struct Node* new_node
+        = (struct Node*)malloc(sizeof(struct Node));
+    new_node->data = new_data;
+    new_node->next = (*head_ref);
+    (*head_ref) = new_node;
+}
 
+void deleteNode(struct Node** head_ref, int key)
+{
+    // Store head node
+    struct Node *temp = *head_ref, *prev;
+ 
+    // If head node itself holds the key to be deleted
+    if (temp != NULL && temp->data == key) {
+        *head_ref = temp->next; // Changed head
+        free(temp); // free old head
+        return;
+    }
+ 
+    // Search for the key to be deleted, keep track of the
+    // previous node as we need to change 'prev->next'
+    while (temp != NULL && temp->data != key) {
+        prev = temp;
+        temp = temp->next;
+    }
+ 
+    // If key was not present in linked list
+    if (temp == NULL)
+        return;
+ 
+    // Unlink the node from linked list
+    prev->next = temp->next;
+ 
+    free(temp); // Free memory
+}
+ 
+
+
+/*
+*/
 int queue_init(fQueue *q)
 {
     q=(fQueue)malloc(sizeof());
@@ -70,9 +109,7 @@ int dequeue(int *n, fQueue *q)
 
 /*Directory queue*/
 typedef struct directory{
-    char* in;
-    char*out;
-    directory *prev;     
+    char* in; 
     directory *next;
 } directory;
 
