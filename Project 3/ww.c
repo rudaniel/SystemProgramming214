@@ -9,26 +9,93 @@
 
 #define BUFFER 256
 
-struct queue {
-    int data[QUEUESIZE];
-    int start, stop;
-    int full;
+/*File queue*/
+typedef struct file{
+    char* in;
+    char*out;
+    file *prev;     
+    file *next;
+} file;
+
+typedef struct fQueue {
+    file *front;
+    file *end;
+    int size;
     pthread_mutex_t lock;
     pthread_cond_t enqueue_ready, dequeue_ready;
-};
+} fQueue;
 
-int queue_init(struct queue *q)
+int queue_init(fQueue *q)
 {
-    q->start = 0;
-    q->stop = 0;
-    q->full = 0;
+    q=(fQueue)malloc(sizeof());
+    q->front = NULL;
+    q->end = NULL;
+    q->size = 0;
     pthread_mutex_init(&q->lock, NULL);
     pthread_cond_init(&q->enqueue_ready, NULL);
     pthread_cond_init(&q->dequeue_ready, NULL);
     return 0;
 }
 
-int enqueue(int n, struct queue *q)
+int enqueue(char* in, char*out, fQueue *q)
+{
+    pthread_mutex_lock(&q->lock);
+    /*while (q->full) {
+        pthread_cond_wait(&q->enqueue_ready, &q->lock);
+    }*/
+    
+    pthread_cond_signal(&q->dequeue_ready);
+    pthread_mutex_unlock(&q->lock);
+    return 0;
+}
+
+int dequeue(int *n, fQueue *q)
+{
+    pthread_mutex_lock(&q->lock);
+    /*while (!q->full && q->start == q->stop) {
+        pthread_cond_wait(&q->dequeue_ready, &q->lock);
+    }*/
+    
+    pthread_signal(&q->enqueue_ready);
+    pthread_mutex_unlock(&q->lock);
+    return 0;
+}
+/*
+*
+*
+*END OF FILE QUEUE CODE
+*
+*
+*/
+
+/*Directory queue*/
+typedef struct directory{
+    char* in;
+    char*out;
+    directory *prev;     
+    directory *next;
+} directory;
+
+typedef struct dQueue {
+    directory *front;
+    directory *end;
+    int size;
+    pthread_mutex_t lock;
+    pthread_cond_t enqueue_ready, dequeue_ready;
+} dQueue;
+
+int queue_init(dQueue *q)
+{
+    q->front = NULL;
+    q->end = NULL;
+    q->size = 0;
+    pthread_mutex_init(&q->lock, NULL);
+    pthread_cond_init(&q->enqueue_ready, NULL);
+    pthread_cond_init(&q->dequeue_ready, NULL);
+    return 0;
+}
+
+int enqueue(int n, dQueue *q)
 {
     pthread_mutex_lock(&q->lock);
     while (q->full) {
@@ -43,7 +110,7 @@ int enqueue(int n, struct queue *q)
     return 0;
 }
 
-int dequeue(int *n, struct queue *q)
+int dequeue(int *n, dQueue *q)
 {
     pthread_mutex_lock(&q->lock);
     while (!q->full && q->start == q->stop) {
@@ -57,6 +124,14 @@ int dequeue(int *n, struct queue *q)
     pthread_mutex_unlock(&q->lock);
     return 0;
 }
+
+/*
+*
+*
+*END OF DIRECTORY QUEUE CODE
+*
+*
+*/
 
 void wrapper(int in, int out,int userWidth){
     if(in==-1&&out==-1)
