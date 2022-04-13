@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#include <semaphore.h>
+#include <pthread.h>
 
 #define BUFFER 256
 
@@ -269,51 +269,7 @@ void directoryExplorer(int userWidth, DIR *path, char* directory){
     }
 }
 
-void makeQueue(){
-    struct dirent *dir;
-    char *txtFiles[BUFFER];
-    int index = 0;
-    int currentFile;
-    int outFile;
-    while((dir=readdir(path))!=NULL){
-        const size_t len = strlen(dir->d_name);
-        if( dir->d_name[0] == '.'){
-        }
-        else if( dir->d_name[0] == 'w' &&
-            dir->d_name[1] == 'r' &&
-            dir->d_name[2] == 'a' &&
-            dir->d_name[3] == 'p' &&
-            dir->d_name[4] == '.' ){
-            }
-        else if (len > 4                     &&
-            dir->d_name[len - 4] == '.' &&
-            dir->d_name[len - 3] == 't' &&
-            dir->d_name[len - 2] == 'x' &&
-            dir->d_name[len - 1] == 't' ){
-            txtFiles[index] = dir->d_name;
-            char curName[BUFFER];
-            memset(curName, 0, sizeof(curName));
-            strcat(curName, directory);
-            strcat(curName, "/");
-            strcat(curName, txtFiles[index]);
-            currentFile = open(curName,O_RDONLY);
-            char *wrap = "wrap.";
-            char finalName[BUFFER];
-            memset(finalName, 0, sizeof(finalName));
-            strcat(finalName, directory);
-            strcat(finalName, "/");
-            strcat(finalName,wrap);
-            strcat(finalName,txtFiles[index]);
-            outFile = open(finalName,O_WRONLY|O_CREAT|O_TRUNC,S_IRWXU|S_IRWXG|S_IRWXO);
-            wrapper(currentFile, outFile, userWidth);
-            index ++;
-            close(currentFile);
-            close(outFile);
-        }
-
-    }
-    return null;
-}
+void makeQueue(){}
 
 int main(int argc, char *argv[]){
     if(argc<1){
