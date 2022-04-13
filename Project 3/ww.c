@@ -9,47 +9,54 @@
 
 #define BUFFER 256
 
-typedef struct {
-    data_t data[QUEUESIZE];
+struct queue {
+    int data[QUEUESIZE];
     int start, stop;
-    sem_t spots_open;
-    sem_t spots_filled;
-    sem_t lock;
-} Queue;
+    int full;
+    pthread_mutex_t lock;
+    pthread_cond_t enqueue_ready, dequeue_ready;
+};
 
-void init(Queue *Q)
+int queue_init(struct queue *q)
 {
-    start = 0;
-    stop = 0;
-    sem_init(&Q->lock, 0, 1);
-    sem_init(&Q->spots_open, 0, QUEUESIZE);
-    sem_init(&Q->spots_filled, 0, 0);
+    q->start = 0;
+    q->stop = 0;
+    q->full = 0;
+    pthread_mutex_init(&q->lock, NULL);
+    pthread_cond_init(&q->enqueue_ready, NULL);
+    pthread_cond_init(&q->dequeue_ready, NULL);
+    return 0;
 }
 
-void enqueue(Queue *Q, data_t d)
+int enqueue(int n, struct queue *q)
 {
-    sem_wait(&Q->spots_open);
-    sem_wait(&Q->lock);
-    Q->data[Q->stop] = d;
-    Q->stop++;
-        if (Q->stop == QUEUESIZE) Q->stop = 0;
-    sem_post(&Q->lock);
-    sem_post(&Q->spots_filled);
+    pthread_mutex_lock(&q->lock);
+    while (q->full) {
+        pthread_cond_wait(&q->enqueue_ready, &q->lock);
+    }
+    q->data[q->stop] = n;
+    q->stop++;
+    if (q->stop == QUEUESIZE) q->stop = 0;
+    if (q->start == q->stop) q->full = 1;
+    pthread_cond_signal(&q->dequeue_ready);
+    pthread_mutex_unlock(&q->lock);
+    return 0;
 }
 
-void dequeue(Queue *Q, data_t *p)
+int dequeue(int *n, struct queue *q)
 {
-    sem_wait(&Q->spots_filled);
-    sem_wait(&Q->lock);
-    * p = Q->data[Q->start];
-    Q->start++;
-        if (Q->start == QUEUESIZE) Q->start = 0;
-    sem_post(&Q->lock);
-    sem_post(&Q->spots_open);
+    pthread_mutex_lock(&q->lock);
+    while (!q->full && q->start == q->stop) {
+        pthread_cond_wait(&q->dequeue_ready, &q->lock);
+    }
+    * n = q->data[q->start];
+    q->start++;
+    if (q->start == QUEUESIZE) q->start == 0;
+    q->full = 0;
+    pthread_signal(&q->enqueue_ready);
+    pthread_mutex_unlock(&q->lock);
+    return 0;
 }
-
-struct Queue* queue;
-init(queue);
 
 void wrapper(int in, int out,int userWidth){
     if(in==-1&&out==-1)
