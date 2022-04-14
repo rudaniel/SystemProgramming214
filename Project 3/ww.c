@@ -10,31 +10,40 @@
 #define BUFFER 256
 
 /*File queue*/
-typedef struct file{
+typedef struct File{
     char* in;
-    char*out;    
-    file *next;
-} file;
+    char* out;    
+    File *next;
+} File;
 
-typedef struct fStack {
-    file *head;
+typedef struct Fstack {
+    File *head;
     pthread_mutex_t lock;
-} fStack;
+    pthread_cond_t enqueue_ready,dequeue_ready;
+   
+} Fstack;
 /*
 */
-void push(struct Node** head_ref, int new_data)
+void push(char* in, char*out, Fstack *q)
 {
-    struct Node* new_node
-        = (struct Node*)malloc(sizeof(struct Node));
-    new_node->data = new_data;
-    new_node->next = (*head_ref);
-    (*head_ref) = new_node;
+    pthread_mutex_lock(&q->lock);
+
+    struct File* new_node
+        = (struct File*)malloc(sizeof(struct File));
+    new_node->in = in;
+    new_node->out = out;
+    new_node->next = (&q->head);
+    q->head = new_node;
+    
+    pthread_cond_signal(&q->dequeue_ready);
+    pthread_mutex_unlock(&q->lock);
 }
 
-void deleteNode(struct Node** head_ref, int key)
+void deleteNode(Fstack *q)
 {
+    pthread_mutex_lock(&q->lock);
     // Store head node
-    struct Node *temp = *head_ref, *prev;
+    struct Node *temp = (&q->head);
  
     // If head node itself holds the key to be deleted
     if (temp != NULL && temp->data == key) {
@@ -58,6 +67,9 @@ void deleteNode(struct Node** head_ref, int key)
     prev->next = temp->next;
  
     free(temp); // Free memory
+
+    pthread_signal(&q->enqueue_ready);
+    pthread_mutex_unlock(&q->lock);
 }
  
 
