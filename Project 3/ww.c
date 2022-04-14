@@ -53,6 +53,23 @@ typedef struct Directory{
 pthread_mutex_t dLock;
 Directory* dHead;
 
+void filePrint() {
+   	while (fHead!=NULL) {
+        printf("Elements in File List: %s\n ", fHead->in);
+         fHead= fHead->next;
+    }
+}
+
+void dirPrint() {
+    //int start = 0;
+   	while (dHead!=NULL) {
+        printf("Elements in Directory List: %s\n ", dHead->in); //Printing list is not working? My be adding elements wrong?
+        //printf("Start: %d\n", start);
+        //start++;
+        dHead = dHead->next;
+    }
+}
+
 void addDirectory(char* in){
     //pthread_mutex_lock(&dLock);
     Directory* temp= (struct Directory*)malloc(sizeof(struct Directory));
@@ -80,14 +97,64 @@ void deleteDirectory(){
 }
 
 void makeFl(){
-    File* node = fHead;
-    while (node != NULL) {
-        printf("%s %s\n", node->in,node->out);
-        node = node->next;
+    //File* node = fHead;
+    while (dHead != NULL) {
+        char* directory=malloc(strlen(dHead->in));
+        strcpy(directory, dHead->in);
+        printf("Current Dirct: %s\n", directory);
+        struct dirent *dir;
+        DIR *path=opendir(directory);
+        char *d=malloc(1);
+        char* inN=malloc(1);
+        char* out=malloc(1);
+        while((dir=readdir(path))!=NULL){
+            int len = strlen(dir->d_name);
+            free(d);
+            d=(char*)malloc(len*sizeof(char));
+            strcpy(d,dir->d_name);
+            //printf("Name of Path: %s\n", d);
+            if( d[0] == '.'){
+            }
+            else if( d[0] == 'w' &&
+            d[1] == 'r' &&
+            d[2] == 'a' &&
+            d[3] == 'p' &&
+            d[4] == '.' ){
+            }
+            else if (len > 4                     &&
+            d[len - 4] == '.' &&
+            d[len - 3] == 't' &&
+            d[len - 2] == 'x' &&
+            d[len - 1] == 't' ){
+                free(inN);
+                free(out);
+                inN=(char*)malloc(strlen(directory)+strlen(d)+1);
+                strcat(inN, directory);
+                strcat(inN, "/");
+                strcat(inN, d);
+
+                out =(char*)malloc(strlen(directory)+strlen(d)+1);
+                char *wrap = "wrap.";
+                strcat(out, directory);
+                strcat(out, "/");
+                strcat(out,wrap);
+                strcat(out, d);
+
+                addFile(inN, out);
+                printf("Name of File Path: %s\n", inN);
+                printf("Name of File Path: %s\n", out);
+            }
+        }
+        dHead = dHead->next;
+        //printf("%s %s\n", node->in,node->out);
+        //node = node->next;
+        closedir(path);
+        free(directory);
     }
 }
 
 void makeDl(){
+    //int infiniteLoop = 0;
     pthread_mutex_lock(&dLock);
     while (dHead != NULL) {
         char* directory=malloc(strlen(dHead->in));
@@ -115,12 +182,13 @@ void makeDl(){
                 if(S_ISDIR(dirFile.st_mode)){
                     addDirectory(inN);
                     printf("added: %s\n",dHead->in);
-                }
+                }          
             }
         }
         closedir(path);
         free(directory);
     }
+
     pthread_mutex_unlock(&dLock);
 }
 /*typedef struct dQueue {
@@ -425,11 +493,8 @@ int main(int argc, char *argv[]){
 
     addDirectory("./foo");
     makeDl();
-    Directory* node = dHead;
-    while (node != NULL) {
-        printf("List: %s\n", node->in);
-        node = node->next;
-    }
+    //dirPrint();
+    makeFl();
 
    /* makeFl();
     File* node = fHead;
