@@ -9,123 +9,121 @@
 
 #define BUFFER 256
 
-/*File queue*/
 typedef struct File{
     char* in;
     char* out;    
-    File *next;
+    struct File *next;
 } File;
 
-typedef struct Fstack {
-    File *head;
-    pthread_mutex_t lock;
-    pthread_cond_t enqueue_ready,dequeue_ready;
-   
-} Fstack;
-/*
-*/
-void push(char* in, char*out, Fstack *q)
-{
-    pthread_mutex_lock(&q->lock);
+pthread_mutex_t fLock;
+File* fHead;
 
-    struct File* new_node
-        = (struct File*)malloc(sizeof(struct File));
-    new_node->in = in;
-    new_node->out = out;
-    new_node->next = (&q->head);
-    q->head = new_node;
-    
-    pthread_cond_signal(&q->dequeue_ready);
-    pthread_mutex_unlock(&q->lock);
-}
-
-void deleteNode(Fstack *q)
-{
-    pthread_mutex_lock(&q->lock);
-    // Store head node
-    struct Node *temp = (&q->head);
- 
-    // If head node itself holds the key to be deleted
-    if (temp != NULL && temp->data == key) {
-        *head_ref = temp->next; // Changed head
-        free(temp); // free old head
-        return;
+void addFile(char* in, char* out){
+    pthread_mutex_lock(&fLock);
+    File* temp= (struct File*)malloc(sizeof(struct File));
+    temp->in = in;
+    temp->out = out;
+    if(fHead!=NULL){
+        temp->next = fHead;
     }
- 
-    // Search for the key to be deleted, keep track of the
-    // previous node as we need to change 'prev->next'
-    while (temp != NULL && temp->data != key) {
-        prev = temp;
-        temp = temp->next;
+    else{
+        temp->next=NULL;
     }
- 
-    // If key was not present in linked list
-    if (temp == NULL)
-        return;
- 
-    // Unlink the node from linked list
-    prev->next = temp->next;
- 
-    free(temp); // Free memory
-
-    pthread_signal(&q->enqueue_ready);
-    pthread_mutex_unlock(&q->lock);
-}
- 
-
-
-/*
-*/
-int queue_init(fQueue *q)
-{
-    q=(fQueue)malloc(sizeof());
-    q->front = NULL;
-    q->end = NULL;
-    q->size = 0;
-    pthread_mutex_init(&q->lock, NULL);
-    pthread_cond_init(&q->enqueue_ready, NULL);
-    pthread_cond_init(&q->dequeue_ready, NULL);
-    return 0;
+    fHead = temp;
+    pthread_mutex_unlock(&fLock);
 }
 
-int enqueue(char* in, char*out, fQueue *q)
-{
-    pthread_mutex_lock(&q->lock);
-    /*while (q->full) {
-        pthread_cond_wait(&q->enqueue_ready, &q->lock);
-    }*/
-    
-    pthread_cond_signal(&q->dequeue_ready);
-    pthread_mutex_unlock(&q->lock);
-    return 0;
+void deleteFile(){
+    pthread_mutex_lock(&fLock);
+    if(fHead!=NULL){
+        File* temp = fHead;
+        fHead= fHead->next;
+        free(temp);
+    }
+    pthread_mutex_unlock(&fLock);
 }
-
-int dequeue(int *n, fQueue *q)
-{
-    pthread_mutex_lock(&q->lock);
-    /*while (!q->full && q->start == q->stop) {
-        pthread_cond_wait(&q->dequeue_ready, &q->lock);
-    }*/
-    
-    pthread_signal(&q->enqueue_ready);
-    pthread_mutex_unlock(&q->lock);
-    return 0;
-}
-/*
-*
-*
-*END OF FILE QUEUE CODE
-*
-*
-*/
+ 
 
 /*Directory queue*/
-typedef struct directory{
+typedef struct Directory{
     char* in; 
-    directory *next;
-} directory;
+    struct Directory *next;
+} Directory;
 
-typedef struct dQueue {
+pthread_mutex_t dLock;
+Directory* dHead;
+
+void addDirectory(char* in){
+    //pthread_mutex_lock(&dLock);
+    Directory* temp= (struct Directory*)malloc(sizeof(struct Directory));
+    temp->in = malloc(strlen(in));
+    strcpy(temp->in,in);
+    if(dHead!=NULL){
+        temp->next = dHead;
+    }
+    else{
+        temp->next=NULL;
+    }
+    dHead = temp;
+    //pthread_mutex_unlock(&dLock);
+}
+
+void deleteDirectory(){
+    //pthread_mutex_lock(&dLock);
+    if(dHead!=NULL){
+        Directory* temp = dHead;
+        dHead= dHead->next;
+        free(temp->in);
+        free(temp);
+    }
+    //pthread_mutex_unlock(&dLock);
+}
+
+void makeFl(){
+    File* node = fHead;
+    while (node != NULL) {
+        printf("%s %s\n", node->in,node->out);
+        node = node->next;
+    }
+}
+
+void makeDl(){
+    pthread_mutex_lock(&dLock);
+    while (dHead != NULL) {
+        char* directory=malloc(strlen(dHead->in));
+        strcpy(directory, dHead->in);
+        deleteDirectory();
+        struct dirent *dir;
+        DIR *path=opendir(directory);
+        char *d=malloc(1);
+        char* inN=malloc(1);
+        while((dir=readdir(path))!=NULL){
+            int len = strlen(dir->d_name);
+            free(d);
+            d=(char*)malloc(len*sizeof(char));
+            strcpy(d,dir->d_name);
+            if( d[0] == '.'){
+            }
+            else{
+                free(inN);
+                inN=(char*)malloc(len+strlen(directory)+1);
+                strcat(inN, directory);
+                strcat(inN, "/");
+                strcat(inN, d);
+                struct stat dirFile;
+                stat (inN, &dirFile);
+                if(S_ISDIR(dirFile.st_mode)){
+                    addDirectory(inN);
+                    printf("added: %s\n",dHead->in);
+                }
+            }
+        }
+        closedir(path);
+        free(directory);
+    }
+    pthread_mutex_unlock(&dLock);
+}
+/*typedef struct dQueue {
     directory *front;
     directory *end;
     int size;
@@ -173,7 +171,7 @@ int dequeue(int *n, dQueue *q)
     pthread_mutex_unlock(&q->lock);
     return 0;
 }
-
+*/
 /*
 *
 *
@@ -393,10 +391,8 @@ void directoryExplorer(int userWidth, DIR *path, char* directory){
     }
 }
 
-void makeQueue(){}
-
 int main(int argc, char *argv[]){
-    if(argc<1){
+   /* if(argc<1){
         printf("Invalid number of argumments\n");
         return-1;
     }
@@ -425,5 +421,38 @@ int main(int argc, char *argv[]){
         }
         close(rd);
         closedir(path);
+    }*/
+
+    addDirectory("./foo");
+    makeDl();
+    Directory* node = dHead;
+    while (node != NULL) {
+        printf("List: %s\n", node->in);
+        node = node->next;
     }
+
+   /* makeFl();
+    File* node = fHead;
+    while (node != NULL) {
+        printf("%s %s\n", node->in,node->out);
+        node = node->next;
+    }
+    printf("\n\n");
+    deleteFile();
+    node = fHead;
+    while (node != NULL) {
+        printf("%s %s\n", node->in,node->out);
+        node = node->next;
+    }
+    node = fHead;
+    for(int i=10; i>0;i--) {
+        deleteFile();
+    }
+printf("new lsit\n");
+    node = fHead;
+    while (node != NULL) {
+        printf("%s %s\n", node->in,node->out);
+        node = node->next;
+    }
+    printf("\n\n");*/
 }
