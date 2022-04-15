@@ -28,6 +28,7 @@ Directory* dHead;
 
 pthread_mutex_t lock;
 
+
 void filePrint() {
     File* node= fHead;
    	while (node!=NULL) {
@@ -552,31 +553,23 @@ void* fileW(void* w){
     return NULL;
 }
 
-void dl(int d){
-    pthread_mutex_lock(&lock);
-    pthread_t id;
-    for (int i = 0; i < d; i++){
+void r(int width, int f, int d){
+    pthread_t ids[f+d];
+    int c=0;
+    //pthread_t id;
+    /*for (int i = 0; i < d; i++){
         //printf("added thread %d...\n",i);
-        pthread_create(&id, NULL, makeDl, NULL);
-        pthread_detach(id);
-    }
-    pthread_mutex_unlock(&lock);
-}
-
-void fl(int width, int f){
-    pthread_mutex_lock(&lock);
-    pthread_t id;
+        pthread_create(&ids[c], NULL, makeDl, NULL);
+        c++;
+    }*/
     for (int i = 0; i < f; i++){
         //printf("added thread %d...\n",i);
-        pthread_create(&id, NULL, fileW, (void*)width);
-        pthread_detach(id);
+        pthread_create(&ids[c], NULL, fileW, (void*)width);
+        c++;
     }
-    pthread_mutex_unlock(&lock);
-}
-
-void r(int width, int f, int d){
-    dl(d);
-    fl(width,f);
+    /*for (int i = 0; i < (f+d); i++){
+       //pthread_join(ids[i], NULL);
+    }*/
    // pthread_exit(NULL);
 }
 
@@ -623,7 +616,7 @@ int main(int argc, char *argv[]){
         exit(EXIT_FAILURE);
     }
     addDirectory(argv[3]);
-    //makeDl();
+    makeDl();
     char* f=malloc(strlen(argv[1])+1);
     strcpy(f,argv[1]);
     int length=strlen(f);
