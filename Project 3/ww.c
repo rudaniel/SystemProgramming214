@@ -26,6 +26,8 @@ File* fHead;
 pthread_mutex_t dLock;
 Directory* dHead;
 
+pthread_mutex_t lock;
+
 void filePrint() {
     File* node= fHead;
    	while (node!=NULL) {
@@ -169,75 +171,83 @@ void deleteDirectory(){
     //pthread_mutex_unlock(&dLock);
 }
 
-void makeDl(){
+void* makeDl(){
     //int infiniteLoop = 0;
     pthread_mutex_lock(&dLock);
-    Directory* node=dHead;
-    while (node != NULL) {
-        char* directory=malloc(strlen(node->in)+1);
-        strcpy(directory, node->in);
-        //printf("rere: %s\n",directory);
-        //deleteDirectory();
-        struct dirent *dir;
-        DIR *path=opendir(directory);
-        while((dir=readdir(path))!=NULL){
-            int len = strlen(dir->d_name);
-            char *d=(char*)malloc(len*sizeof(char)+1);
-            strcpy(d,dir->d_name);
-            if( d[0] == '.'){
+    if(dHead==NULL){
+        printf("    Quiting Directory thread- %lu\n",pthread_self());
+        pthread_mutex_unlock(&dLock);
+        return NULL;
+    }
+    Directory* temp=dHead;
+    char*directory= malloc(strlen(temp->in)+1);
+    strcpy(directory,temp->in);
+    deleteDirectory();
+    pthread_mutex_unlock(&dLock);
+    printf("Using Directory thread- %lu\n",pthread_self());
+    //printf("rere: %s\n",directory);
+    //deleteDirectory();
+    struct dirent *dir;
+    DIR *path=opendir(directory);
+    while((dir=readdir(path))!=NULL){
+        int len = strlen(dir->d_name);
+        char *d=(char*)malloc(len*sizeof(char)+1);
+        strcpy(d,dir->d_name);
+        if( d[0] == '.'){
+        }
+        else{
+            char* inN=(char*)malloc(len+strlen(directory)+10);
+            int l=sizeof(inN);
+            memset(inN, 0, l);
+            strcat(inN, directory);
+            if(directory[strlen(directory) - 1] != '/'){
+                strcat(inN, "/");
             }
-            else{
+            strcat(inN, d);
+            struct stat dirFile;
+            stat (inN, &dirFile);
+            if(S_ISDIR(dirFile.st_mode)){
+                pthread_mutex_lock(&dLock);
+                addDirectory(inN);
+                pthread_mutex_unlock(&dLock);
+                //printf("added: %s\n",node->in);
+            }
+            else if(len > 5 && d[0] == 'w' && d[1] == 'r' && d[2] == 'a' && d[3] == 'p' && d[4] == '.' ){
+            }
+            else if (len > 4 && d[len - 4] == '.' && d[len - 3] == 't' && d[len - 2] == 'x' && d[len - 1] == 't' ){
                 char* inN=(char*)malloc(len+strlen(directory)+10);
-                int l=sizeof(inN);
+                int l=sizeof(inN); 
                 memset(inN, 0, l);
                 strcat(inN, directory);
                 if(directory[strlen(directory) - 1] != '/'){
                     strcat(inN, "/");
                 }
                 strcat(inN, d);
-                struct stat dirFile;
-                stat (inN, &dirFile);
-                if(S_ISDIR(dirFile.st_mode)){
-                    addDirectory(inN);
-                    //printf("added: %s\n",node->in);
+                char* out=(char*)malloc(len+strlen(directory)+10);
+                l=sizeof(inN);
+                memset(out, 0, l);
+                strcat(out, directory);
+                if(directory[strlen(directory) - 1] != '/'){
+                    strcat(out, "/");
                 }
-                else if(len > 5 && d[0] == 'w' && d[1] == 'r' && d[2] == 'a' && d[3] == 'p' && d[4] == '.' ){
-                }
-                else if (len > 4 && d[len - 4] == '.' && d[len - 3] == 't' && d[len - 2] == 'x' && d[len - 1] == 't' ){
-                    char* inN=(char*)malloc(len+strlen(directory)+10);
-                    int l=sizeof(inN); 
-                    memset(inN, 0, l);
-                    strcat(inN, directory);
-                    if(directory[strlen(directory) - 1] != '/'){
-                        strcat(inN, "/");
-                    }
-                    strcat(inN, d);
-                    char* out=(char*)malloc(len+strlen(directory)+10);
-                    l=sizeof(inN);
-                    memset(out, 0, l);
-                    strcat(out, directory);
-                    if(directory[strlen(directory) - 1] != '/'){
-                        strcat(out, "/");
-                    }
-                    strcat(out,"wrap.");
-                    strcat(out, d);
-                    //printf("Name of File Path: %s\n", inN);
-                    //printf("Name of File Path: %s\n", out);
-                    pthread_mutex_lock(&fLock);
-                    addFile(inN, out);
-                    pthread_mutex_unlock(&fLock);
-                    free(out);
-                    free(inN);
-                }
-                free(inN);          
+                strcat(out,"wrap.");
+                strcat(out, d);
+                //printf("Name of File Path: %s\n", inN);
+                //printf("Name of File Path: %s\n", out);
+                pthread_mutex_lock(&fLock);
+                addFile(inN, out);
+                pthread_mutex_unlock(&fLock);
+                free(out);
+                free(inN);
             }
-            free(d);
+            free(inN);          
         }
-        closedir(path);
-        free(directory);
-        node=node->next;
+        free(d);
     }
-    pthread_mutex_unlock(&dLock);
+    closedir(path);
+    free(directory);
+    makeDl();
+    return NULL;
 }
 
 /*typedef struct dQueue {
@@ -517,6 +527,7 @@ void* fileW(void* w){
     if(fHead==NULL){
         printf("    Quiting File thread- %lu\n",pthread_self());
         pthread_mutex_unlock(&fLock);
+        pthread_exit(NULL);
         return NULL;
     }
     File* temp=fHead;
@@ -541,12 +552,31 @@ void* fileW(void* w){
     return NULL;
 }
 
-void r(int width, int threads){
+void dl(int d){
+    pthread_mutex_lock(&lock);
     pthread_t id;
-    for (int i = 0; i < threads; i++){
+    for (int i = 0; i < d; i++){
+        //printf("added thread %d...\n",i);
+        pthread_create(&id, NULL, makeDl, NULL);
+        pthread_detach(id);
+    }
+    pthread_mutex_unlock(&lock);
+}
+
+void fl(int width, int f){
+    pthread_mutex_lock(&lock);
+    pthread_t id;
+    for (int i = 0; i < f; i++){
         //printf("added thread %d...\n",i);
         pthread_create(&id, NULL, fileW, (void*)width);
+        pthread_detach(id);
     }
+    pthread_mutex_unlock(&lock);
+}
+
+void r(int width, int f, int d){
+    dl(d);
+    fl(width,f);
    // pthread_exit(NULL);
 }
 
@@ -593,7 +623,7 @@ int main(int argc, char *argv[]){
         exit(EXIT_FAILURE);
     }
     addDirectory(argv[3]);
-    makeDl();
+    //makeDl();
     char* f=malloc(strlen(argv[1])+1);
     strcpy(f,argv[1]);
     int length=strlen(f);
@@ -610,7 +640,7 @@ int main(int argc, char *argv[]){
     //printf("Count: %d\n",count);
     if(strcmp(f,"-r")==0){
         printf("    Regular\n\n");
-        r(width,1);
+        r(width,1,1);
     }
     else if(count==1&&f[0]=='-'&&f[1]=='r'&& length>2){
         char* num= malloc(length+1);
@@ -620,7 +650,7 @@ int main(int argc, char *argv[]){
         free(num);
         free(f);
         printf("    Using %d Threads\n\n",threads);
-        r(width,threads);
+        r(width,threads,1);
     }
     else{
         //printf("    Gotta Blast %s\n\n",f);
@@ -648,7 +678,7 @@ int main(int argc, char *argv[]){
         free(f);
         free(temp);
         printf("    Using %d Threads for Files and %d Threads for Directories.\n\n",threads,t2);
-        r(width,threads);
+        r(width,threads,t2);
     }
     closedir(path);
     /*
@@ -659,8 +689,8 @@ int main(int argc, char *argv[]){
     filePrint();
 */
     //wipe directory
-    printf("dddddddd\n");
-    dirPrint();
+    //printf("dddddddd\n");
+    //dirPrint();
     while (dHead != NULL) {
         deleteDirectory();
     }
