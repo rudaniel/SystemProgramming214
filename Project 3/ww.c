@@ -56,7 +56,7 @@ void addFile(char* in, char* out){
 }
 
 void deleteFile(){
-    pthread_mutex_lock(&fLock);
+    //pthread_mutex_lock(&fLock);
     if(fHead!=NULL){
         File* temp = fHead;
         fHead= fHead->next;
@@ -64,10 +64,10 @@ void deleteFile(){
         free(temp->out);
         free(temp);
     }
-    pthread_mutex_unlock(&fLock);
+    //pthread_mutex_unlock(&fLock);
 }
 
-void makeFl(){
+/*void makeFl(){
     Directory* node = dHead;
     while (node != NULL) {
         char* directory=malloc(strlen(node->in)+10);
@@ -107,7 +107,7 @@ void makeFl(){
                 memset(out, 0, l);
                 strcat(out, directory);
                 if(directory[strlen(directory) - 1] != '/'){
-                    strcat(inN, "/");
+                    strcat(out, "/");
                 }
                 strcat(out,"wrap.");
                 strcat(out, d);
@@ -126,7 +126,7 @@ void makeFl(){
         free(directory);
     }
 }
-
+*/
 /*Directory queue*/
 
 void dirPrint() {
@@ -201,6 +201,34 @@ void makeDl(){
                     addDirectory(inN);
                     //printf("added: %s\n",node->in);
                 }
+                else if(len > 5 && d[0] == 'w' && d[1] == 'r' && d[2] == 'a' && d[3] == 'p' && d[4] == '.' ){
+                }
+                else if (len > 4 && d[len - 4] == '.' && d[len - 3] == 't' && d[len - 2] == 'x' && d[len - 1] == 't' ){
+                    char* inN=(char*)malloc(len+strlen(directory)+10);
+                    int l=sizeof(inN); 
+                    memset(inN, 0, l);
+                    strcat(inN, directory);
+                    if(directory[strlen(directory) - 1] != '/'){
+                        strcat(inN, "/");
+                    }
+                    strcat(inN, d);
+                    char* out=(char*)malloc(len+strlen(directory)+10);
+                    l=sizeof(inN);
+                    memset(out, 0, l);
+                    strcat(out, directory);
+                    if(directory[strlen(directory) - 1] != '/'){
+                        strcat(out, "/");
+                    }
+                    strcat(out,"wrap.");
+                    strcat(out, d);
+                    //printf("Name of File Path: %s\n", inN);
+                    //printf("Name of File Path: %s\n", out);
+                    pthread_mutex_lock(&fLock);
+                    addFile(inN, out);
+                    pthread_mutex_unlock(&fLock);
+                    free(out);
+                    free(inN);
+                }
                 free(inN);          
             }
             free(d);
@@ -209,9 +237,9 @@ void makeDl(){
         free(directory);
         node=node->next;
     }
-
     pthread_mutex_unlock(&dLock);
 }
+
 /*typedef struct dQueue {
     directory *front;
     directory *end;
@@ -400,6 +428,9 @@ void wrapper(int in, int out,int userWidth){
     if(sum <= userWidth || currentWidth==0){
         temp= (char*)malloc((totalWidth*2)*sizeof(char));
         strcpy(temp,text);
+        if(new == 1){
+            strcat(temp," ");
+        }
         strcat(temp, word);
         free(text);
         text= (char*)malloc((totalWidth*2)*sizeof(char));
@@ -480,6 +511,25 @@ void directoryExplorer(int userWidth, DIR *path, char* directory){
     }
 }
 
+void r(int width){
+    //pthread_mutex_lock(&fLock);
+    if(fHead==NULL){
+        //pthread_mutex_unlock(&fLock);
+        return;
+    }
+    int currentFile;
+    int outFile;
+    File* temp=fHead;
+    currentFile = open(temp->in,O_RDONLY);
+    outFile = open(temp->out,O_WRONLY|O_CREAT|O_TRUNC,S_IRWXU|S_IRWXG|S_IRWXO);
+    wrapper(currentFile, outFile, width);
+    close(currentFile);
+    close(outFile);
+    deleteFile();
+    //pthread_mutex_unlock(&fLock);
+    r(width);
+}
+
 int main(int argc, char *argv[]){
    /* if(argc<1){
         printf("Invalid number of argumments\n");
@@ -512,12 +562,27 @@ int main(int argc, char *argv[]){
         closedir(path);
     }*/
 
+    int width =  atoi(argv[2]);
+    DIR *path;
+    path = opendir(argv[3]);
+    struct stat dirFile;
+    int status = stat (argv[3], &dirFile);
+    if(status != 0){
+        closedir(path);
+        perror("The Second Console Argument is INVALID Due to: \n  --Invaild Directory \n          OR \n  --File Doesn't Exist \n");
+        exit(EXIT_FAILURE);
+    }
+    addDirectory(argv[3]);
+    makeDl();
+    r(width);
+    closedir(path);
+    /*
     addDirectory("foo");
     makeDl();
-    makeFl();
+   // makeFl();
     dirPrint();
     filePrint();
-
+*/
     //wipe directory
     
     while (dHead != NULL) {
