@@ -512,25 +512,32 @@ void directoryExplorer(int userWidth, DIR *path, char* directory){
 }
 
 void* fileW(void* w){
-    printf("Using thread- %lu\n",pthread_self());
     int width=(int)w;
     pthread_mutex_lock(&fLock);
     if(fHead==NULL){
+        printf("    Quit thread- %lu\n",pthread_self());
         pthread_mutex_unlock(&fLock);
+        return NULL;
     }
-    else{
-        int currentFile;
-        int outFile;
-        File* temp=fHead;
-        currentFile = open(temp->in,O_RDONLY);
-        outFile = open(temp->out,O_WRONLY|O_CREAT|O_TRUNC,S_IRWXU|S_IRWXG|S_IRWXO);
-        wrapper(currentFile, outFile, width);
-        close(currentFile);
-        close(outFile);
-        deleteFile();
-        pthread_mutex_unlock(&fLock);
-        fileW(w);
-    }
+    File* temp=fHead;
+    char*in= malloc(strlen(temp->in)+1);
+    char*out= malloc(strlen(temp->out)+1);
+    strcpy(in,temp->in);
+    strcpy(out,temp->out);
+    deleteFile();
+    pthread_mutex_unlock(&fLock);
+    printf("Using thread- %lu\n",pthread_self());
+    int currentFile;
+    int outFile;
+    currentFile = open(in,O_RDONLY);
+    outFile = open(out,O_WRONLY|O_CREAT|O_TRUNC,S_IRWXU|S_IRWXG|S_IRWXO);
+    wrapper(currentFile, outFile, width);
+    close(currentFile);
+    close(outFile);
+    free(in);
+    free(out);
+    fileW(w);
+
     return NULL;
 }
 
@@ -606,9 +613,12 @@ int main(int argc, char *argv[]){
         r(width,1);
     }
     else if(count==1&&f[0]=='-'&&f[1]=='r'&& length>2){
-        char num[(length-1)];
+        char* num= malloc(length+1);
+        //memset(num,0,strlen(num));
         memcpy(num,&f[2],(length-2));
         int threads=atoi(num);
+        free(num);
+        free(f);
         printf("    Using %d Threads\n\n",threads);
         r(width,threads);
     }
@@ -635,10 +645,13 @@ int main(int argc, char *argv[]){
         char num[(length-1)];
         memcpy(num,&temp[2],(length-2));
         int threads=atoi(num);
+        free(f);
+        free(temp);
         printf("    Using %d Threads for Files and %d Threads for Directories.\n\n",threads,t2);
         r(width,threads);
     }
     closedir(path);
+    pthread_exit(NULL);
     /*
     addDirectory("foo");
     makeDl();
