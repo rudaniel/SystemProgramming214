@@ -512,9 +512,9 @@ void directoryExplorer(int userWidth, DIR *path, char* directory){
 }
 
 void r(int width){
-    //pthread_mutex_lock(&fLock);
+    pthread_mutex_lock(&fLock);
     if(fHead==NULL){
-        //pthread_mutex_unlock(&fLock);
+        pthread_mutex_unlock(&fLock);
         return;
     }
     int currentFile;
@@ -526,7 +526,7 @@ void r(int width){
     close(currentFile);
     close(outFile);
     deleteFile();
-    //pthread_mutex_unlock(&fLock);
+    pthread_mutex_unlock(&fLock);
     r(width);
 }
 
