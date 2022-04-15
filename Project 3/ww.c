@@ -515,7 +515,7 @@ void* fileW(void* w){
     int width=(int)w;
     pthread_mutex_lock(&fLock);
     if(fHead==NULL){
-        printf("    Quit thread- %lu\n",pthread_self());
+        printf("    Quiting File thread- %lu\n",pthread_self());
         pthread_mutex_unlock(&fLock);
         return NULL;
     }
@@ -526,7 +526,7 @@ void* fileW(void* w){
     strcpy(out,temp->out);
     deleteFile();
     pthread_mutex_unlock(&fLock);
-    printf("Using thread- %lu\n",pthread_self());
+    printf("Using File thread- %lu\n",pthread_self());
     int currentFile;
     int outFile;
     currentFile = open(in,O_RDONLY);
@@ -547,7 +547,7 @@ void r(int width, int threads){
         //printf("added thread %d...\n",i);
         pthread_create(&id, NULL, fileW, (void*)width);
     }
-    pthread_exit(NULL);
+   // pthread_exit(NULL);
 }
 
 int main(int argc, char *argv[]){
@@ -651,7 +651,6 @@ int main(int argc, char *argv[]){
         r(width,threads);
     }
     closedir(path);
-    pthread_exit(NULL);
     /*
     addDirectory("foo");
     makeDl();
@@ -660,7 +659,8 @@ int main(int argc, char *argv[]){
     filePrint();
 */
     //wipe directory
-    
+    printf("dddddddd\n");
+    dirPrint();
     while (dHead != NULL) {
         deleteDirectory();
     }
@@ -668,7 +668,7 @@ int main(int argc, char *argv[]){
         deleteFile();
     }
     
-
+pthread_exit(NULL);
    /* makeFl();
     File* node = fHead;
     while (node != NULL) {
