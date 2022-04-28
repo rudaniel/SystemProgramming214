@@ -15,6 +15,8 @@ extern Directory* dHead;
 extern int fCount;
 extern int dCount;
 
+void filePrint();
+void dirPrint();
 void addFile(char* in, char* out);
 void deleteFile();
 void addDirectory(char* in);
@@ -23,3 +25,4 @@ void* makeDl(void* r);
 void wrapper(int in, int out,int userWidth);
 void* fileW(void* w);
 void r(int width, int f, int d);
+int main(int argc, char *argv[]);

@@ -20,6 +20,8 @@ int main(int argc, char *argv[]){
         printf("Recursive code: \n");
         width =  atoi(argv[2]);
         for(args-=3;args>0; args--,offset++){
+            dCount=0;
+            fCount=0;
             //printf("Number of args: %d\n",args);
             status = stat (argv[3+offset], &dirFile);
             if(status != 0){
@@ -82,6 +84,7 @@ int main(int argc, char *argv[]){
                 int rd = open(argv[3+offset],O_RDONLY);
                 if(S_ISREG(dirFile.st_mode)){
                     wrapper(rd, -1,width);
+                    fCount++;
                 }
             }
             while (dHead != NULL) {
@@ -104,6 +107,8 @@ int main(int argc, char *argv[]){
         else {
             for(args-=2;args>0; args--,offset++){
                 //printf("Number of args: %d\n",args);
+                dCount=0;
+                fCount=0;
                 width =  atoi(argv[1]);
                 int rd = open(argv[2+offset],O_RDONLY);
                 status = stat (argv[2+offset], &dirFile);
@@ -114,6 +119,7 @@ int main(int argc, char *argv[]){
                 }
                 else if(S_ISREG(dirFile.st_mode)){
                     wrapper(rd, -1,width);
+                    fCount++;
                 }
                 else if(S_ISDIR(dirFile.st_mode)){
                     recursion=0;

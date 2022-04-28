@@ -136,6 +136,7 @@ void* makeDl(void* r){
             if(S_ISDIR(dirFile.st_mode) && recursion==1){
                 pthread_mutex_lock(&dLock);
                 addDirectory(inN);
+                dCount++;
                 pthread_cond_broadcast(&cond);
                 pthread_mutex_unlock(&dLock);
             }
@@ -161,6 +162,7 @@ void* makeDl(void* r){
                 strcat(out, d);
                 pthread_mutex_lock(&fLock);
                 addFile(inN, out);
+                fCount++;
                 pthread_mutex_unlock(&fLock);
                 free(out);
                 free(inN);
@@ -392,4 +394,29 @@ void r(int width, int f, int d){
     for (int i = 0; i < f; i++){
         pthread_join(fIds[i], NULL);
     }
+}
+
+void filePrint() {
+    File* cHead = fHead;
+   	while (cHead!=NULL) {
+        printf("Elements in File List: %s, %s\n", cHead->in,cHead->out);
+         cHead= cHead->next;
+    }
+}
+
+void dirPrint() {
+    //int start = 0;
+    Directory* wHead = dHead;
+   	while (wHead!=NULL) {
+        printf("Elements in Directory List: %s\n", wHead->in); //Printing list is not working? My be adding elements wrong?
+        //printf("Start: %d\n", start);
+        //start++;
+        File* node = fHead;
+   	    while (node!=NULL) {
+            printf("    Elements in File List: %s, %s\n", node->in, node->out);
+            node= node->next;
+        }
+        wHead = wHead->next;
+       }
+
 }
