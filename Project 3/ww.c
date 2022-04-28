@@ -94,6 +94,10 @@ int main(int argc, char *argv[]){
                 deleteFile();
             }
         }
+        if(argc==3){
+            printf("Enter text now:(Press ctrl d to run word wrapper)\n");
+            wrapper(0, -1, atoi(argv[2]));
+        }
     }
     else{
         if(argc<1){
