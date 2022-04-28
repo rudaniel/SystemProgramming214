@@ -55,8 +55,6 @@ void deleteFile(){
     if(fHead!=NULL){
         File* temp = fHead;
         fHead= fHead->next;
-        free(temp->in);
-        free(temp->out);
         free(temp);
     }
 }
@@ -82,7 +80,6 @@ void deleteDirectory(){
     if(dHead!=NULL){
         Directory* temp = dHead;
         dHead= dHead->next;
-        free(temp->in);
         free(temp);
     }
 }
