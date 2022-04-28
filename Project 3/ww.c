@@ -85,7 +85,9 @@ void deleteDirectory(){
 int thread=0;
 pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 
-void* makeDl(){
+void* makeDl(void* r){
+    int* rec=(int*)r;
+    int recursion=*rec;
     pthread_mutex_lock(&dLock);
     if(dHead==NULL){
         thread--;
@@ -96,7 +98,7 @@ void* makeDl(){
             printf("    Quiting Directory thread- %lu\n",pthread_self());
             pthread_cond_broadcast(&cond);
             pthread_mutex_unlock(&dLock);
-            pthread_exit(NULL);
+            //pthread_exit(NULL);
             return NULL;
         }
         thread++;
@@ -127,7 +129,7 @@ void* makeDl(){
             strcat(inN, d);
             struct stat dirFile;
             stat (inN, &dirFile);
-            if(S_ISDIR(dirFile.st_mode)){
+            if(S_ISDIR(dirFile.st_mode) && recursion==1){
                 pthread_mutex_lock(&dLock);
                 addDirectory(inN);
                 pthread_cond_broadcast(&cond);
@@ -165,7 +167,7 @@ void* makeDl(){
     }
     closedir(path);
     free(directory);
-    makeDl();
+    makeDl(r);
     return NULL;
 }
 
@@ -338,51 +340,6 @@ void wrapper(int in, int out,int userWidth){
     }
 }
 
-void directoryExplorer(int userWidth, DIR *path, char* directory){
-    struct dirent *dir;
-    char *txtFiles[BUFFER];
-    int index = 0;
-    int currentFile;
-    int outFile;
-    while((dir=readdir(path))!=NULL){
-        const size_t len = strlen(dir->d_name);
-        if( dir->d_name[0] == '.'){
-        }
-        else if( dir->d_name[0] == 'w' &&
-            dir->d_name[1] == 'r' &&
-            dir->d_name[2] == 'a' &&
-            dir->d_name[3] == 'p' &&
-            dir->d_name[4] == '.' ){
-            }
-        else if (len > 4                     &&
-            dir->d_name[len - 4] == '.' &&
-            dir->d_name[len - 3] == 't' &&
-            dir->d_name[len - 2] == 'x' &&
-            dir->d_name[len - 1] == 't' ){
-            txtFiles[index] = dir->d_name;
-            char curName[BUFFER];
-            memset(curName, 0, sizeof(curName));
-            strcat(curName, directory);
-            strcat(curName, "/");
-            strcat(curName, txtFiles[index]);
-            currentFile = open(curName,O_RDONLY);
-            char *wrap = "wrap.";
-            char finalName[BUFFER];
-            memset(finalName, 0, sizeof(finalName));
-            strcat(finalName, directory);
-            strcat(finalName, "/");
-            strcat(finalName,wrap);
-            strcat(finalName,txtFiles[index]);
-            outFile = open(finalName,O_WRONLY|O_CREAT|O_TRUNC,S_IRWXU|S_IRWXG|S_IRWXO);
-            wrapper(currentFile, outFile, userWidth);
-            index ++;
-            close(currentFile);
-            close(outFile);
-        }
-
-    }
-}
-
 void* fileW(void* w){
     int* ww=(int*)w;
     int width=*ww;
@@ -390,7 +347,7 @@ void* fileW(void* w){
     if(fHead==NULL){
         printf("    Quiting File thread- %lu\n",pthread_self());
         pthread_mutex_unlock(&fLock);
-        pthread_exit(NULL);
+        //pthread_exit(NULL);
         return NULL;
     }
     File* temp=fHead;
@@ -417,9 +374,10 @@ void* fileW(void* w){
 void r(int width, int f, int d){
     pthread_t dIds[d];
     pthread_t fIds[f];
+    int recursion=1;
     for (int i = 0; i < d; i++){
         thread++;
-        pthread_create(&dIds[i], NULL, makeDl, NULL);
+        pthread_create(&dIds[i], NULL, makeDl, &recursion);
     }
     for (int i = 0; i < d; i++){
         pthread_join(dIds[i], NULL);
@@ -433,71 +391,121 @@ void r(int width, int f, int d){
 }
 
 int main(int argc, char *argv[]){
-    int width =  atoi(argv[2]);
-    DIR *path;
-    path = opendir(argv[3]);
+    int args=argc;
+    char* version=argv[1];
+    int width;
+    int recursion;
+    int offset=0;
     struct stat dirFile;
-    int status = stat (argv[3], &dirFile);
-    if(status != 0){
-        closedir(path);
-        perror("The Second Console Argument is INVALID Due to: \n  --Invaild Directory \n          OR \n  --File Doesn't Exist \n");
-        exit(EXIT_FAILURE);
-    }
-    addDirectory(argv[3]);
-    char* f=malloc(strlen(argv[1])+1);
-    strcpy(f,argv[1]);
-    int length=strlen(f);
-    int count=0;
-    char* token = strtok(f, ",");
-    while (token) {
-        token = strtok(NULL, ",");
-        count++;
-    }
-    free(f);
-    f=malloc(strlen(argv[1])+1);
-    strcpy(f,argv[1]);
-    if(strcmp(f,"-r")==0){
-        printf("    Regular\n\n");
-        r(width,1,1);
-    }
-    else if(count==1&&f[0]=='-'&&f[1]=='r'&& length>2){
-        char* num= malloc(length+1);
-        memcpy(num,&f[2],(length-2));
-        int threads=atoi(num);
-        free(num);
-        free(f);
-        printf("    Using %d Threads\n\n",threads);
-        r(width,threads,1);
+    int status;
+    if(version[0]=='-'&& version[1]=='r'){
+        printf("Recursive code: \n");
+        width =  atoi(argv[2]);
+        for(args-=3;args>0; args--,offset++){
+            //printf("Number of args: %d\n",args);
+            status = stat (argv[3+offset], &dirFile);
+            if(status != 0){
+                perror("The Second Console Argument is INVALID Due to: \n  --Invaild Directory \n          OR \n  --File Doesn't Exist \n");
+                exit(EXIT_FAILURE);
+            }
+            if(S_ISDIR(dirFile.st_mode)){
+                addDirectory(argv[3+offset]);
+                char* f=malloc(strlen(argv[1])+1);
+                strcpy(f,argv[1]);
+                int length=strlen(f);
+                int count=0;
+                char* token = strtok(f, ",");
+                while (token) {
+                    token = strtok(NULL, ",");
+                    count++;
+                }
+                free(f);
+                f=malloc(strlen(argv[1])+1);
+                strcpy(f,argv[1]);
+                if(strcmp(f,"-r")==0){
+                    printf("    Regular\n\n");
+                    r(width,1,1);
+                }
+                else if(count==1&&f[0]=='-'&&f[1]=='r'&& length>2){
+                    char* num= malloc(length+1);
+                    memcpy(num,&f[2],(length-2));
+                    int threads=atoi(num);
+                    free(num);
+                    free(f);
+                    printf("    Using %d Threads\n\n",threads);
+                    r(width,threads,1);
+                }
+                else{
+                    char* tok = strtok(f, ",");
+                    count=0;
+                    char* temp;
+                    int t2;
+                    while (tok) {
+                        if(count==0){
+                            temp= malloc(strlen(tok)+1);
+                            strcpy(temp,tok);
+                        }
+                        else if(count==1){
+                            t2=atoi(tok);
+                        }
+                        count++;
+                        tok = strtok(NULL, ",");
+                    }
+                    char num[(length-1)];
+                    memcpy(num,&temp[2],(length-2));
+                    int threads=atoi(num);
+                    free(f);
+                    free(temp);
+                    printf("    Using %d Threads for Directories and %d Threads for Files.\n\n",threads,t2);
+                    r(width,t2,threads);
+                }
+            }
+            else{
+                int rd = open(argv[3+offset],O_RDONLY);
+                if(S_ISREG(dirFile.st_mode)){
+                    wrapper(rd, -1,width);
+                }
+            }
+            while (dHead != NULL) {
+                deleteDirectory();
+            }
+            while (fHead != NULL) {
+                deleteFile();
+            }
+        }
     }
     else{
-        char* tok = strtok(f, ",");
-        count=0;
-        char* temp;
-        int t2;
-        while (tok) {
-            if(count==0){
-                temp= malloc(strlen(tok)+1);
-                strcpy(temp,tok);
-            }
-            else if(count==1){
-                t2=atoi(tok);
-            }
-            count++;
-            tok = strtok(NULL, ",");
+        if(argc<1){
+            printf("Invalid number of argumments\n");
+            return-1;
         }
-        char num[(length-1)];
-        memcpy(num,&temp[2],(length-2));
-        int threads=atoi(num);
-        free(f);
-        free(temp);
-        printf("    Using %d Threads for Directories and %d Threads for Files.\n\n",threads,t2);
-        r(width,t2,threads);
+        else if(argc==2){
+            printf("Enter text now:(Press ctrl d to run word wrapper)\n");
+            wrapper(0, -1, atoi(argv[1]));
+        }
+        else {
+            for(args-=2;args>0; args--,offset++){
+                //printf("Number of args: %d\n",args);
+                width =  atoi(argv[1]);
+                int rd = open(argv[2+offset],O_RDONLY);
+                status = stat (argv[2+offset], &dirFile);
+                if(status != 0){
+                    close(rd);
+                    perror("The Second Console Argument is INVALID Due to: \n  --Invaild Directory \n          OR \n  --File Doesn't Exist \n");
+                    exit(EXIT_FAILURE);
+                }
+                else if(S_ISREG(dirFile.st_mode)){
+                    wrapper(rd, -1,width);
+                }
+                else if(S_ISDIR(dirFile.st_mode)){
+                    recursion=0;
+                    addDirectory(argv[2+offset]);
+                    makeDl(&recursion);
+                    fileW(&width);
+                }
+                close(rd);
+            }
+        }
     }
-    closedir(path);
-    while (dHead != NULL) {
-        deleteDirectory();
-    }
-    while (fHead != NULL) {
-        deleteFile();
-    }
+    pthread_exit(NULL);
 }
