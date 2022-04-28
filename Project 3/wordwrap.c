@@ -6,9 +6,6 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <pthread.h>
-//#include "wordwrap.h"
-
-#define BUFFER 256
 
 typedef struct File{
     char* in;
@@ -99,7 +96,6 @@ void* makeDl(void* r){
             printf("    Quiting Directory thread- %lu\n",pthread_self());
             pthread_cond_broadcast(&cond);
             pthread_mutex_unlock(&dLock);
-            //pthread_exit(NULL);
             return NULL;
         }
         thread++;
@@ -350,7 +346,6 @@ void* fileW(void* w){
     if(fHead==NULL){
         printf("    Quiting File thread- %lu\n",pthread_self());
         pthread_mutex_unlock(&fLock);
-        //pthread_exit(NULL);
         return NULL;
     }
     File* temp=fHead;

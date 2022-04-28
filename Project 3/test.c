@@ -6,7 +6,6 @@
 #include <time.h>
 #include "wordwrap.h"
 
-
 int main(int argc, char**argv){
     srand(time(0));
     clock_t beginnn = clock();

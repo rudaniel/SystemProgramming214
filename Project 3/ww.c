@@ -22,7 +22,6 @@ int main(int argc, char *argv[]){
         for(args-=3;args>0; args--,offset++){
             dCount=0;
             fCount=0;
-            //printf("Number of args: %d\n",args);
             status = stat (argv[3+offset], &dirFile);
             if(status != 0){
                 perror("The Second Console Argument is INVALID Due to: \n  --Invaild Directory \n          OR \n  --File Doesn't Exist \n");
@@ -111,7 +110,6 @@ int main(int argc, char *argv[]){
         }
         else {
             for(args-=2;args>0; args--,offset++){
-                //printf("Number of args: %d\n",args);
                 dCount=0;
                 fCount=0;
                 width =  atoi(argv[1]);
