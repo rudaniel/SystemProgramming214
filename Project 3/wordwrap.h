@@ -15,8 +15,6 @@ extern Directory* dHead;
 extern int fCount;
 extern int dCount;
 
-void filePrint();
-void dirPrint();
 void addFile(char* in, char* out);
 void deleteFile();
 void addDirectory(char* in);

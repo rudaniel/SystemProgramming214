@@ -392,28 +392,3 @@ void r(int width, int f, int d){
         pthread_join(fIds[i], NULL);
     }
 }
-
-void filePrint() {
-    File* cHead = fHead;
-   	while (cHead!=NULL) {
-        printf("Elements in File List: %s, %s\n", cHead->in,cHead->out);
-         cHead= cHead->next;
-    }
-}
-
-void dirPrint() {
-    //int start = 0;
-    Directory* wHead = dHead;
-   	while (wHead!=NULL) {
-        printf("Elements in Directory List: %s\n", wHead->in); //Printing list is not working? My be adding elements wrong?
-        //printf("Start: %d\n", start);
-        //start++;
-        File* node = fHead;
-   	    while (node!=NULL) {
-            printf("    Elements in File List: %s, %s\n", node->in, node->out);
-            node= node->next;
-        }
-        wHead = wHead->next;
-       }
-
-}
