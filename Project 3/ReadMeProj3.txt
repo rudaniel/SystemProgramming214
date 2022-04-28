@@ -1,12 +1,21 @@
 Name: Daniel Lopez NetID: ddl59
 Name: Manav Bali NetId: mb1841
 
+IMPORTANT NOTE:
+We have made a test file to test our code and show differnt aspects of it work. That file is called "test.c". 
+In order to run that, you need to type "make test" in the terminal and then type "./test". Our code shows the 
+thread ID's of the threads that are being used to show that multi-threading is working. In order to run the 
+code by itself IT IS NECCESSARY to include the files "wordwrap.h" "wordwrap.c" "ww.c". And then you can type 
+"make" in the terminal and run the command "./ww" and whatever arguments you may have along with it. 
+
+Information about our test.c and testing methods can be found under "ReadMeTest.txt".
+
 For our test strategy, we decided to test our project in parts rather than looking
 at it as a whole. This makes testing more simple and guarantees our code works before
 continuing to other parts.
 
 Storing Directories/Files:
-We decided to use a linked list storage type that acts as a queue for both storing
+We decided to use a linked list storage type that acts as a stack for both storing
 directories and storing files. So we have two linked lists. The user gives the original first directory, 
 and from there, we will store all of its files within the files linked list. The linked
 list that is filled with the files is then processed through our wrapping function therefore
@@ -37,3 +46,11 @@ and running them through the wrapper function. Very similar to Part 2, to check 
 ,in fact, reading the directories, we printed out the pthreads ids to make sure that each thread is doing
 its jobs at the same time. When testing this code, we were able to determine that all threads were working, and we were getting 
 the same results that we got in Part 1 when we weren't using more than 1 thread. 
+
+Part IV (EXTRA CREDIT):
+We check if there is more than one input that is valid. We will go through those inputs and wrap each of them respectfully.
+We loop through each of those arguments until we no longer have anymore directories to wrap. For the arguments that begin with "-r",
+we subtract the number of arguments by 3 and see if the result is greater than 0, meaning there is a valid input to wrap. We then 
+wrap that input and increase an offset by 1. We add that offset to argv[3+offset] to get the next value and go with the loop until 
+the remainder of arguments is 0. We do the same for the regular input without the recursion but instead of 3 we use 2. Our code 
+also reads from command line if you dont enter any files or directories for the "-r" or the regular commands.
