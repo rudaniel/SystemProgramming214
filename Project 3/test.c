@@ -38,6 +38,8 @@ int main(int argc, char**argv){
     clock_t begin = clock();
 
     addDirectory(inn); //We will not be testing when giving a directory if both linked list will be filled properly
+    fCount=0;
+    dCount=0;
     dCount++;
     int rec=1;
     makeDl(&rec);
@@ -50,6 +52,9 @@ int main(int argc, char**argv){
 
     clock_t begin2 = clock();
     addDirectory(inn);
+    fCount=0;
+    dCount=0;
+    dCount++;
     r(20,2,1); //testing multiple treads reading the file linked list and wrapping.
     printf("Number of Directories: %d\n", dCount);
     filePrint(); 
@@ -60,6 +65,9 @@ int main(int argc, char**argv){
 
     clock_t begin3 = clock();
     addDirectory(inn);
+    fCount=0;
+    dCount=0;
+    dCount++;
     r(20,2,4); //testing multiple treads both wrapping and reading from directory.
     printf("Number of Directories: %d\n", dCount);
     filePrint(); 
@@ -70,6 +78,9 @@ int main(int argc, char**argv){
 
     clock_t begin4 = clock();
     addDirectory(inn);
+    fCount=0;
+    dCount=0;
+    dCount++;
     r(20,4,6); //increased number of treads to make sure code is working at faster pace when more treads are added.
     printf("Number of Directories: %d\n", dCount);
     filePrint(); 
@@ -80,6 +91,9 @@ int main(int argc, char**argv){
 
     clock_t begin5 = clock();
     addDirectory(inn);
+    fCount=0;
+    dCount=0;
+    dCount++;
     r(20,10,1); //here im testing just an increase of file treads no increase in direc treads.
     printf("Number of Directories: %d\n", dCount);
     filePrint(); 

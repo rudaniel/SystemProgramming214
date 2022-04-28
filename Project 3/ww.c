@@ -30,6 +30,7 @@ int main(int argc, char *argv[]){
             }
             if(S_ISDIR(dirFile.st_mode)){
                 addDirectory(argv[3+offset]);
+                dCount++;
                 char* f=malloc(strlen(argv[1])+1);
                 strcpy(f,argv[1]);
                 int length=strlen(f);
@@ -128,6 +129,7 @@ int main(int argc, char *argv[]){
                 else if(S_ISDIR(dirFile.st_mode)){
                     recursion=0;
                     addDirectory(argv[2+offset]);
+                    dCount++;
                     makeDl(&recursion);
                     fileW(&width);
                 }
